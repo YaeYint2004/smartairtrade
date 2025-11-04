@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - SmartAirTrade</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            background-image: url('https://source.unsplash.com/random/1920x1080/?crypto,blockchain,technology');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.85);
+            z-index: -1;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .3s ease;
+        }
+
+        .accordion-open .accordion-content {
+            max-height: none;
+        }
+
+        .accordion-content-inner {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .animate-scale {
+            animation: scaleIn .2s ease-out;
+        }
+
+        /* Live chat animations */
+        @keyframes fadeInFast { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade-in-fast { animation: fadeInFast 0.2s ease-out forwards; }
+
+        @keyframes slideIn {
+            from { transform: translateY(100%) scale(0.95); }
+            to { transform: translateY(0) scale(1); }
+        }
+
+        @media (min-width: 640px) {
+            @keyframes slideIn {
+                from { transform: translateX(100%) scale(0.95); }
+                to { transform: translateX(0) scale(1); }
+            }
+        }
+
+        .animate-slide-in { animation: slideIn 0.3s cubic-bezier(0.25,1,0.5,1) forwards; }
+    </style>
+</head>
+
+<body class="text-slate-300 font-sans">
+
+    <!-- HEADER -->
+    <header class="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50">
+        <div class="max-w-[1200px] mx-auto px-6 flex justify-between items-center h-16">
+            <a href="index.html" class="text-sky-400 text-xl font-semibold">SmartAirTrade</a>
+            <nav class="hidden md:flex items-center space-x-4">
+                <a href="index.html" class="flex flex-col items-center justify-center text-slate-400 w-14 h-14 text-sky-500">
+                    <ion-icon name="home-outline" class="text-2xl"></ion-icon>
+                    <span class="text-xs mt-1">Dashboard</span>
+                </a>
+                <a href="market.html" class="flex flex-col items-center justify-center text-slate-400  w-14 h-14">
+                    <ion-icon name="trending-up-outline" class="text-2xl"></ion-icon>
+                    <span class="text-xs mt-1">Market</span>
+                </a>
+                <a href="options.html" class="flex flex-col items-center justify-center text-slate-400  w-14 h-14">
+                    <ion-icon name="options-outline" class="text-2xl"></ion-icon>
+                    <span class="text-xs mt-1">Options</span>
+                </a>
+                <a href="mining.html" class="flex flex-col items-center justify-center text-slate-400 w-14 h-14">
+                    <ion-icon name="flame-outline" class="text-2xl"></ion-icon>
+                    <span class="text-xs mt-1">Mining</span>
+                </a>
+            </nav>
+            <div class="flex items-center space-x-2">
+                <button id="profile-btn" class="px-3 py-2 rounded-md bg-slate-700 hover:bg-slate-600 flex items-center text-sky-500">
+                    <ion-icon name="settings-outline" class="mr-1"></ion-icon> Profile
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-[1200px] mx-auto p-6 pb-24">
+
+        <!-- Profile Card -->
+        <div class="bg-slate-800/70 backdrop-blur-sm rounded-xl p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-6">
+            <img src="https://picsum.photos/seed/me/150" class="w-24 h-24 rounded-full border-4 border-sky-500 shadow">
+            <div class="text-center sm:text-left">
+                <h1 class="text-2xl font-bold text-white">Alex Johnson</h1>
+                <p class="text-slate-300">alex.j@example.com</p>
+                <p class="text-slate-400">@alexj</p>
+                <p class="text-green-400 mt-1 text-sm">Verified Tier 2</p>
+            </div>
+        </div>
+
+        <!-- Security Section -->
+        <div class="bg-slate-800/70 backdrop-blur-sm rounded-xl p-6 mb-4 accordion">
+            <button class="w-full flex justify-between items-center text-left text-lg font-semibold accordion-btn">
+                Security & Verification
+                <ion-icon name="chevron-down-outline" class="text-sky-400 text-lg"></ion-icon>
+            </button>
+
+            <div class="accordion-content mt-4 text-sm space-y-3">
+                <p>Password: Last changed 1 month ago
+                    <button onclick="openChangePassword()" class="px-3 py-1 bg-sky-500 hover:bg-sky-600 rounded ml-2">Change</button>
+                </p>
+                <hr class="border-slate-600">
+                <p>Phone Number: Not Verified
+                    <button onclick="openPhoneModal()" class="px-3 py-1 bg-sky-500 hover:bg-sky-600 rounded ml-2">Verify</button>
+                </p>
+                <hr class="border-slate-600">
+                <p>Transaction Password: Enabled
+                    <button onclick="openTxPasswordModal()" class="px-3 py-1 bg-sky-500 hover:bg-sky-600 rounded ml-2">Reset</button>
+                </p>
+            </div>
+        </div>
+
+        <!-- Trading Stats Section -->
+        <div class="bg-slate-800/70 backdrop-blur-sm rounded-xl p-6 accordion">
+            <button class="w-full flex justify-between items-center text-left text-lg font-semibold accordion-btn">
+                Trading Statistics
+                <ion-icon name="chevron-down-outline" class="text-sky-400 text-lg"></ion-icon>
+            </button>
+
+            <div class="accordion-content mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-slate-700/60 rounded-xl p-4 text-center">
+                    <h3 class="text-2xl font-bold text-sky-400">1,245</h3>
+                    <p>Total Trades</p>
+                </div>
+                <div class="bg-slate-700/60 rounded-xl p-4 text-center">
+                    <h3 class="text-2xl font-bold text-green-400">68.5%</h3>
+                    <p>Win Rate</p>
+                </div>
+                <div class="bg-slate-700/60 rounded-xl p-4 text-center">
+                    <h3 class="text-2xl font-bold text-sky-400">$1.58M</h3>
+                    <p>Total Volume</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support Section -->
+        <div class="bg-slate-800/70 backdrop-blur-sm rounded-xl p-6 mt-4 accordion">
+            <button class="w-full flex justify-between items-center text-left text-lg font-semibold accordion-btn">
+                Support
+                <ion-icon name="chevron-down-outline" class="text-sky-400 text-lg"></ion-icon>
+            </button>
+
+            <div class="accordion-content mt-4 text-sm text-slate-300 space-y-4">
+                <!-- About Us Accordion -->
+                <div class="accordion-inner border-b border-slate-600 pb-3">
+                    <button class="w-full flex justify-between items-center text-left font-semibold accordion-btn-inner">
+                        About Us
+                        <ion-icon name="chevron-down-outline" class="text-sky-400 text-lg"></ion-icon>
+                    </button>
+                    <div class="accordion-content-inner mt-2">
+                        <p>SmartAirTrade is a next-generation trading platform that empowers users with real-time data, intuitive charts, and secure transactions.</p>
+                    </div>
+                </div>
+
+                <!-- Help & FAQ Accordion -->
+                <div class="accordion-inner border-b border-slate-600 pb-3">
+                    <button class="w-full flex justify-between items-center text-left font-semibold accordion-btn-inner">
+                        Help & FAQ
+                        <ion-icon name="chevron-down-outline" class="text-sky-400 text-lg"></ion-icon>
+                    </button>
+                    <div class="accordion-content-inner mt-2">
+                        <p><strong>How to deposit funds?</strong> Go to the Dashboard → Deposit.</p>
+                        <p><strong>How to reset password?</strong> Click on Security & Verification → Change Password.</p>
+                        <p><strong>How to verify phone?</strong> Click on Security & Verification → Verify Phone.</p>
+                    </div>
+                </div>
+
+                <!-- Live Chat Button -->
+                <div class="accordion-inner">
+                    <button id="openLiveChat" class="w-full text-left font-semibold text-sky-400">
+                        💬 Live Chat
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Chat Modal -->
+        <div id="liveChatModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-end justify-end z-50 animate-fade-in-fast">
+            <div class="bg-white dark:bg-slate-800 rounded-t-xl sm:rounded-l-xl sm:rounded-tr-none shadow-2xl w-full h-[80%] sm:h-auto sm:max-h-[85vh] sm:w-[380px] m-0 sm:m-6 flex flex-col animate-slide-in">
+                <header class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center flex-shrink-0">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900 dark:text-white">Live Support</h2>
+                        <div class="flex items-center space-x-2">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                            </span>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Our team typically replies in a few minutes.</p>
+                        </div>
+                    </div>
+                    <button id="closeLiveChat" class="p-1 rounded-full text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700">✕</button>
+                </header>
+                <div id="chatMessages" class="flex-grow p-4 overflow-y-auto space-y-4">
+                    <div class="flex items-start gap-2 justify-start">
+                        <img src="https://picsum.photos/seed/support/32" class="w-8 h-8 rounded-full"/>
+                        <div class="max-w-[80%] px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-bl-none">
+                            <p class="text-sm">Hello! Welcome to SmartAirTrade support. How can I help you today?</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-2 justify-start">
+                        <img src="https://picsum.photos/seed/support/32" class="w-8 h-8 rounded-full"/>
+                        <div class="max-w-[80%] px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-bl-none">
+                            <p class="text-sm">You can also contact us via <a href="https://t.me/XdyLn25" target="_blank" class="text-sky-400 hover:underline">Telegram</a>.</p>
+                        </div>
+                    </div>
+                    <div id="messagesEnd"></div>
+                </div>
+                <form id="chatForm" class="p-4 border-t border-slate-200 dark:border-slate-700 flex items-center gap-2 flex-shrink-0">
+                    <input type="text" id="chatInput" placeholder="Type your message..." class="w-full bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-full py-2 px-4 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"/>
+                    <button type="submit" class="bg-sky-500 text-white rounded-full p-2.5 hover:bg-sky-600 transition-colors">➡️</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Footer Navigation -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-800/80 backdrop-blur-sm border-t border-slate-700 flex justify-around py-2 z-50">
+        <a href="index.html" class="flex flex-col items-center text-slate-400">
+            <ion-icon name="home-outline" class="text-2xl"></ion-icon>
+            <span class="text-xs mt-1">Dashboard</span>
+        </a>
+        <a href="market.html" class="flex flex-col items-center text-slate-400">
+            <ion-icon name="trending-up-outline" class="text-2xl"></ion-icon>
+            <span class="text-xs mt-1">Market</span>
+        </a>
+        <a href="options.html" class="flex flex-col items-center text-slate-400">
+            <ion-icon name="options-outline" class="text-2xl"></ion-icon>
+            <span class="text-xs mt-1">Options</span>
+        </a>
+        <a href="mining.html" class="flex flex-col items-center text-slate-400">
+            <ion-icon name="flame-outline" class="text-2xl"></ion-icon>
+            <span class="text-xs mt-1">Mining</span>
+        </a>
+    </nav>
+
+    <script>
+        // Accordion
+        document.querySelectorAll('.accordion-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.parentElement.classList.toggle('accordion-open');
+                const content = btn.nextElementSibling;
+                if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                    content.style.maxHeight = '0';
+                } else {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                }
+            });
+        });
+
+        document.querySelectorAll('.accordion-btn-inner').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const content = btn.nextElementSibling;
+                if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                    content.style.maxHeight = '0';
+                } else {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                }
+                const outer = btn.closest('.accordion-content');
+                if (outer) setTimeout(() => { outer.style.maxHeight = outer.scrollHeight + 'px'; }, 300);
+            });
+        });
+
+        // Live Chat
+        const liveChatModal = document.getElementById('liveChatModal');
+        const openLiveChatBtn = document.getElementById('openLiveChat');
+        const closeLiveChatBtn = document.getElementById('closeLiveChat');
+        const chatForm = document.getElementById('chatForm');
+        const chatInput = document.getElementById('chatInput');
+        const chatMessages = document.getElementById('chatMessages');
+        const messagesEnd = document.getElementById('messagesEnd');
+
+        function scrollToBottom() { messagesEnd.scrollIntoView({ behavior: 'smooth' }); }
+
+        openLiveChatBtn.addEventListener('click', () => { liveChatModal.classList.remove('hidden'); scrollToBottom(); });
+        closeLiveChatBtn.addEventListener('click', () => { liveChatModal.classList.add('hidden'); });
+        liveChatModal.addEventListener('click', e => { if(e.target === liveChatModal) liveChatModal.classList.add('hidden'); });
+        window.addEventListener('keydown', e => { if(e.key === 'Escape') liveChatModal.classList.add('hidden'); });
+
+        chatForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            const userDiv = document.createElement('div');
+            userDiv.className = 'flex items-end gap-2 justify-end';
+            userDiv.innerHTML = `<div class="max-w-[80%] px-3 py-2 rounded-xl bg-sky-500 text-white rounded-br-none"><p class="text-sm">${text}</p></div>`;
+            chatMessages.appendChild(userDiv);
+            scrollToBottom();
+            chatInput.value = '';
+
+            setTimeout(() => {
+                const agentDiv = document.createElement('div');
+                agentDiv.className = 'flex items-start gap-2 justify-start';
+                agentDiv.innerHTML = `<img src="https://picsum.photos/seed/support/32" class="w-8 h-8 rounded-full"/><div class="max-w-[80%] px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-bl-none"><p class="text-sm">Thank you for your message. An agent will be with you shortly.</p></div>`;
+                chatMessages.appendChild(agentDiv);
+                scrollToBottom();
+            }, 1500);
+        });
+
+        // Other modals & password/phone handling: Keep your existing functions here
+    </script>
+
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>

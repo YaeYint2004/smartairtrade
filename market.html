@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Market - SmartAirTrade</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #0f172a;
+      font-family: sans-serif;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      background-color: #1e293b;
+    }
+
+    tr:hover {
+      background-color: #334155;
+    }
+
+    .text-green {
+      color: #10b981;
+    }
+
+    .text-red {
+      color: #ef4444;
+    }
+
+    .sparkline {
+      width: 100px;
+      height: 24px;
+    }
+  </style>
+</head>
+
+<body class="text-slate-300 min-h-screen">
+  <header class="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50">
+  <div class="max-w-[1920px] mx-auto px-6 flex items-center justify-between h-16">
+    <a href="dashboard.html" class="text-sky-400 font-semibold text-lg">SmartAirTrade</a>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center space-x-4">
+      <a href="index.html" class="flex flex-col items-center justify-center text-slate-400 w-14 h-14">
+        <ion-icon name="home-outline" class="text-2xl"></ion-icon>
+        <span class="text-xs mt-1">Dashboard</span>
+      </a>
+
+      <a href="market.html" class="flex flex-col items-center justify-center text-sky-500 w-14 h-14">
+        <ion-icon name="trending-up-outline" class="text-2xl"></ion-icon>
+        <span class="text-xs mt-1 text-sky-500">Market</span>
+      </a>
+
+      <a href="options.html" class="flex flex-col items-center justify-center text-slate-400 w-14 h-14">
+        <ion-icon name="options-outline" class="text-2xl"></ion-icon>
+        <span class="text-xs mt-1">Options</span>
+      </a>
+
+      <a href="mining.html" class="flex flex-col items-center justify-center text-slate-400 w-14 h-14">
+        <ion-icon name="flame-outline" class="text-2xl"></ion-icon>
+        <span class="text-xs mt-1">Mining</span>
+      </a>
+    </nav>
+
+    <!-- Profile button -->
+    <div class="flex items-center space-x-2">
+      <button id="profile-btn" class="px-3 py-2 bg-slate-700 rounded-md hover:bg-slate-600 flex items-center">
+        <ion-icon name="settings-outline" class="mr-1 text-white"></ion-icon> Profile
+      </button>
+    </div>
+  </div>
+</header>
+  <main class="max-w-[1200px] mx-auto p-4">
+    <input id="search" placeholder="Search..." class="px-3 py-2 mb-4 rounded bg-slate-700 text-white w-full sm:w-64" />
+    <div class="table-container bg-slate-800/50 rounded-lg overflow-hidden">
+      <table class="w-full text-sm min-w-[700px]">
+        <thead>
+          <tr>
+            <th class="p-2 text-left">#</th>
+            <th class="p-2 text-left">Name</th>
+            <th class="p-2 text-right">7d %</th>
+            <th class="p-2 text-right">24h %</th>
+            <th class="p-2 text-right">Market Cap</th>
+            <th class="p-2 text-right">Volume</th>
+            <th class="p-2 text-right">Trend</th>
+          </tr>
+        </thead>
+        <tbody id="market-table"></tbody>
+      </table>
+    </div>
+    <!-- Mobile Footer Nav -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-800/80 backdrop-blur-sm border-t border-slate-700 flex justify-around py-2 z-50">
+  <a href="index.html" class="flex flex-col items-center text-slate-400">
+    <ion-icon name="home-outline" class="text-2xl"></ion-icon>
+    <span class="text-xs mt-1">Dashboard</span>
+  </a>
+  <a href="market.html" class="flex flex-col items-center text-sky-500">
+    <ion-icon name="trending-up-outline" class="text-2xl"></ion-icon>
+    <span class="text-xs mt-1">Market</span>
+  </a>
+  <a href="options.html" class="flex flex-col items-center text-slate-400">
+    <ion-icon name="options-outline" class="text-2xl"></ion-icon>
+    <span class="text-xs mt-1">Options</span>
+  </a>
+  <a href="mining.html" class="flex flex-col items-center text-slate-400">
+    <ion-icon name="flame-outline" class="text-2xl"></ion-icon>
+    <span class="text-xs mt-1">Mining</span>
+  </a>
+</nav>
+  </main>
+  <script>
+    document.getElementById('profile-btn').addEventListener('click', () => {
+      window.location.href = 'profile.html';
+    });
+    const COINS = ['bitcoin', 'ethereum', 'solana', 'ripple', 'cardano', 'polkadot', 'dogecoin', 'avalanche-2', 'litecoin', 'tron'];
+    const tbody = document.getElementById('market-table');
+    const searchInput = document.getElementById('search');
+    let marketData = [];
+
+    async function fetchMarket() {
+      const res = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${COINS.join(',')}&order=market_cap_desc&sparkline=true&price_change_percentage=7d,24h`);
+      marketData = await res.json();
+      renderMarket();
+    }
+
+    function renderMarket() {
+      const filter = searchInput.value.toLowerCase();
+      tbody.innerHTML = '';
+      marketData.forEach((coin, i) => {
+        if (!coin.name.toLowerCase().includes(filter) && !coin.symbol.toLowerCase().includes(filter)) return;
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-700';
+        tr.innerHTML = `
+      <td class="p-2">${i + 1}</td>
+      <td class="p-2 flex items-center gap-2"><img src="${coin.image}" class="w-6 h-6 rounded-full" />${coin.name}</td>
+      <td class="p-2 text-right ${coin.price_change_percentage_7d_in_currency >= 0 ? 'text-green' : 'text-red'}">${coin.price_change_percentage_7d_in_currency?.toFixed(2)}%</td>
+      <td class="p-2 text-right ${coin.price_change_percentage_24h >= 0 ? 'text-green' : 'text-red'}">${coin.price_change_percentage_24h?.toFixed(2)}%</td>
+      <td class="p-2 text-right">$${coin.market_cap.toLocaleString()}</td>
+      <td class="p-2 text-right">$${coin.total_volume.toLocaleString()}</td>
+      <td class="p-2 text-right"><canvas id="spark-${i}" class="sparkline"></canvas></td>
+    `;
+        tbody.appendChild(tr);
+        drawSparkline(`spark-${i}`, coin.sparkline_in_7d.price);
+      });
+    }
+
+    function drawSparkline(id, data) {
+      const canvas = document.getElementById(id);
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const max = Math.max(...data);
+      const min = Math.min(...data);
+      ctx.beginPath();
+      ctx.strokeStyle = data[data.length - 1] >= data[0] ? '#10b981' : '#ef4444';
+      data.forEach((v, i) => {
+        const x = (i / (data.length - 1)) * canvas.width;
+        const y = canvas.height - ((v - min) / (max - min || 1)) * canvas.height;
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    }
+
+    searchInput.addEventListener('input', renderMarket);
+    fetchMarket();
+    setInterval(fetchMarket, 10000);
+  </script>
+  <!--
+    - ionicon link
+  -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>
