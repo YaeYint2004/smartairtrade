@@ -104,13 +104,7 @@
 
             <!-- Left: active/history table -->
             <section class="lg:col-span-8 flex flex-col gap-4">
-                <div class="glass rounded-lg shadow p-4">
-                    <div class="flex items-center justify-between">
-                        <h2 class="text-xl font-bold text-slate-900 dark:text-white">Options Trading</h2>
-                        <div class="text-sm text-slate-500">Server time: <span id="time-display">--:--:--</span></div>
-                    </div>
-                    <p class="text-sm text-slate-500 mt-2">Trade options with live crypto prices. Expire outcomes determined by real-time market data.</p>
-                </div>
+               
 
                 <div class="glass rounded-lg shadow overflow-hidden flex flex-col">
                     <div class="flex border-b border-slate-200 dark:border-slate-700">
@@ -240,7 +234,6 @@
         const toastEl = document.getElementById('toast');
         const tradesScroll = document.getElementById('trades-scroll');
         const activeCountEl = document.getElementById('active-count');
-        const timeDisplay = document.getElementById('time-display');
 
         let chart, candleSeries;
         let activeTrades = [];
@@ -367,7 +360,7 @@
             renderTrades();
         }
 
-        setInterval(()=>{checkExpiries(); timeDisplay.textContent=new Date().toLocaleTimeString();},1000);
+        setInterval(()=>{checkExpiries(); 
 
         initPairs();
         setInterval(()=>updateSelectedPair(selectedPair.id),30000); // refresh price every 30s
