@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Options Trading - SmartAirTrade</title>
+    <title>Options Trading - SmartAirTrade (Vanilla)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -13,6 +13,7 @@
             background-position: center;
             background-attachment: fixed;
             background-repeat: no-repeat;
+            overflow-x: hidden;
         }
 
         body::before {
@@ -20,23 +21,16 @@
             position: fixed;
             inset: 0;
             z-index: -1;
-        }
-
-        html.light body::before {
-            background-color: rgba(241, 245, 249, 0.85);
-        }
-
-        html.dark body::before {
             background-color: rgba(15, 23, 42, 0.85);
         }
 
         .glass {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.06);
             backdrop-filter: blur(6px);
         }
 
         .dark .glass {
-            background: rgba(17, 24, 39, 0.7);
+            background: rgba(17, 24, 39, 0.6);
         }
 
         .modal-bg {
@@ -50,321 +44,594 @@
         }
 
         .modal-card {
-            width: 360px;
+            width: 420px;
             max-width: calc(100% - 32px);
         }
 
-        ::-webkit-scrollbar {
-            height: 8px;
-            width: 8px;
+        .pulse {
+            animation: pulse 1s infinite;
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: rgba(71, 85, 105, 0.6);
-            border-radius: 6px;
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .no-select {
+            user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
         }
     </style>
 </head>
 
-<body class="text-slate-300">
-
+<body class="text-slate-200">
     <!-- Header -->
     <header class="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50">
         <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
             <span class="font-semibold text-lg tracking-tight text-sky-400">SmartAirTrade</span>
+            <!-- Header Nav -->
             <nav class="hidden md:flex items-center space-x-4">
-                <a href="index.html" class="flex flex-col items-center justify-center text-slate-400 w-14 h-14">
+                <a href="index.html" class="flex flex-col items-center justify-center text-slate-500 w-14 h-14">
                     <ion-icon name="home-outline" class="text-2xl"></ion-icon>
                     <span class="text-xs mt-1">Dashboard</span>
                 </a>
-                <a href="market.html" class="flex flex-col items-center justify-center text-slate-400  w-14 h-14">
+                <a href="market.html" class="flex flex-col items-center justify-center text-slate-400 w-14 h-14">
                     <ion-icon name="trending-up-outline" class="text-2xl"></ion-icon>
                     <span class="text-xs mt-1">Market</span>
                 </a>
                 <a href="options.html" class="flex flex-col items-center justify-center text-sky-500 w-14 h-14">
-                    <ion-icon name="options-outline" class="text-2xl text-sky-500"></ion-icon>
-                    <span class="text-xs mt-1 text-sky-500">Options</span>
+                    <ion-icon name="options-outline" class="text-2xl"></ion-icon>
+                    <span class="text-xs mt-1">Options</span>
                 </a>
                 <a href="mining.html" class="flex flex-col items-center justify-center text-slate-400 w-14 h-14">
                     <ion-icon name="flame-outline" class="text-2xl"></ion-icon>
                     <span class="text-xs mt-1">Mining</span>
                 </a>
             </nav>
+
             <div class="flex items-center space-x-2">
+                <!-- Language Selector -->
+                <div class="relative" id="language-dropdown">
+                    <button id="language-btn" class="px-3 py-2 rounded-md bg-slate-700 hover:bg-slate-600 text-white">
+                        🇺🇸 English ▼
+                    </button>
+                    <div id="language-menu"
+                        class="absolute right-0 mt-2 w-48 bg-slate-800 rounded-md shadow-lg py-1 hidden z-50">
+                        <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="en">🇺🇸
+                            English</button>
+                        <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="zh-HK">🇭🇰 Chinese
+                            (HK)</button>
+                        <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="ko">🇰🇷
+                            Korean</button>
+                        <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="es">🇪🇸
+                            Spanish</button>
+                        <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="ar">🇸🇦
+                            Arabic</button>
+                    </div>
+                </div>
                 <button id="profile-btn" class="px-3 py-2 rounded-md bg-slate-700 hover:bg-slate-600 flex items-center">
                     <ion-icon name="settings-outline" class="mr-1 text-white"></ion-icon> Profile
                 </button>
             </div>
+
         </div>
     </header>
+    <!-- Mobile Footer Navigation -->
+    <nav
+        class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-800/80 backdrop-blur-sm border-t border-slate-700 flex justify-around py-2 z-50">
+        <a href="index.html" class="flex flex-col items-center text-slate-500">
+            <ion-icon name="home-outline" class="text-2xl"></ion-icon>
+            <span class="text-xs mt-1">Dashboard</span>
+        </a>
+        <a href="market.html" class="flex flex-col items-center text-slate-400">
+            <ion-icon name="trending-up-outline" class="text-2xl"></ion-icon>
+            <span class="text-xs mt-1">Market</span>
+        </a>
+        <a href="options.html" class="flex flex-col items-center text-sky-400">
+            <ion-icon name="options-outline" class="text-2xl"></ion-icon>
+            <span class="text-xs mt-1">Options</span>
+        </a>
+        <a href="mining.html" class="flex flex-col items-center text-slate-400">
+            <ion-icon name="flame-outline" class="text-2xl"></ion-icon>
+            <span class="text-xs mt-1">Mining</span>
+        </a>
+    </nav>
 
-    <!-- Main -->
-    <main class="max-w-[1200px] mx-auto p-4 sm:p-6 lg:p-8 pb-28">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div class="max-w-5xl mx-auto p-6">
 
-            <!-- Left: active/history table -->
-            <section class="lg:col-span-8 flex flex-col gap-4">
-               
 
-                <div class="glass rounded-lg shadow overflow-hidden flex flex-col">
-                    <div class="flex border-b border-slate-200 dark:border-slate-700">
-                        <button id="tab-active" class="px-4 py-3 text-sm font-semibold border-b-2 border-transparent">Active Positions (<span id="active-count">0</span>)</button>
-                        <button id="tab-history" class="px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-500">Trade History</button>
-                    </div>
-
-                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 text-xs text-slate-500 px-4 py-2 bg-slate-100/50 dark:bg-slate-800/50">
-                        <div>Pair</div>
-                        <div>Direction</div>
-                        <div>Entry</div>
-                        <div class="hidden sm:block">Close</div>
-                        <div class="text-center">Status</div>
-                        <div class="text-right">Payout</div>
-                    </div>
-
-                    <div id="trades-scroll" class="max-h-[360px] overflow-auto"></div>
-                </div>
-            </section>
-
-            <!-- Right: chart + controls -->
-            <aside class="lg:col-span-4 flex flex-col gap-4">
-                <div class="glass rounded-lg shadow p-4">
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <section class="lg:col-span-4 space-y-4">
+                <div class="glass rounded-xl p-4 shadow">
                     <div class="flex items-center gap-3 mb-3">
-                        <img id="pair-icon" src="" alt="" class="w-10 h-10 rounded-full" />
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2">
-                                <h3 id="pair-title" class="text-lg font-bold text-slate-900 dark:text-white">BTC / USD</h3>
-                                <div id="price" class="font-mono text-slate-500">--</div>
-                            </div>
-                            <select id="pair-select" class="mt-2 w-full bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-md py-2 px-3 text-slate-900 dark:text-white"></select>
+                        <div class="w-full">
+                            <label class="text-xs text-slate-400">Pair</label>
+                            <select id="pair-select"
+                                class="block mt-1 w-full bg-slate-800/40 border border-slate-700 rounded px-3 py-2 text-slate-100"></select>
                         </div>
                     </div>
 
-                    <div id="chart" class="h-56 w-full rounded-md mb-3 border border-slate-200 dark:border-slate-700"></div>
+                    <div class="mb-3">
+                        <div class="text-xs text-slate-400">Live Price</div>
+                        <div id="live-price" class="text-2xl font-mono text-white mt-1">--</div>
+                    </div>
 
                     <div class="grid grid-cols-2 gap-3">
-                        <button id="buy-up" class="bg-green-600 hover:bg-green-700 text-white py-3 rounded-md flex items-center justify-center font-bold">Buy Rise</button>
-                        <button id="buy-down" class="bg-red-600 hover:bg-red-700 text-white py-3 rounded-md flex items-center justify-center font-bold">Buy Low</button>
+                        <button id="buy-rise"
+                            class="bg-green-600 hover:bg-green-700 text-white py-3 rounded-md font-bold">Buy
+                            Rise</button>
+                        <button id="buy-low"
+                            class="bg-red-600 hover:bg-red-700 text-white py-3 rounded-md font-bold">Buy Low</button>
+                    </div>
+
+                    <!-- TradingView Chart Container -->
+                    <div class="glass rounded-xl p-4 shadow mt-4">
+                        <div class="text-xs text-slate-400 mb-1">Price Chart</div>
+                        <div id="tv-chart" class="w-full h-[400px] md:h-[500px] lg:h-[600px]"></div>
                     </div>
                 </div>
-            </aside>
-        </div>
-    </main>
+            </section>
 
-    <!-- Trade Modal -->
-    <div id="trade-modal" class="modal-bg">
-        <div class="modal-card glass rounded-lg p-4">
-            <div class="flex items-center justify-between mb-3">
-                <h3 id="modal-title" class="text-lg font-semibold text-slate-900 dark:text-white">Execute Trade</h3>
-                <button id="close-modal" class="text-slate-500 hover:text-slate-700">✕</button>
-            </div>
-            <div class="space-y-3">
-                <div class="text-sm text-slate-500">Pair: <strong id="modal-pair">BTC/USD</strong></div>
-                <div class="text-sm text-slate-500">Direction: <strong id="modal-dir">Rise</strong></div>
-                <label class="text-xs text-slate-500">Amount (USD)</label>
-                <input id="trade-amount" type="number" min="1" step="0.01" class="w-full rounded-md border border-slate-200 dark:border-slate-600 px-3 py-2 bg-white/90 dark:bg-slate-700 text-slate-900" />
-                <label class="text-xs text-slate-500">Duration</label>
-                <select id="trade-duration" class="w-full rounded-md border border-slate-200 dark:border-slate-600 px-3 py-2 bg-white/90 dark:bg-slate-700 text-slate-900">
-                    <option value="30">30s</option>
-                    <option value="60">60s</option>
-                    <option value="90">90s</option>
-                </select>
-                <div id="trade-error" class="text-sm text-red-500 hidden"></div>
-                <div class="flex gap-2">
-                    <button id="confirm-trade" class="flex-1 bg-sky-500 hover:bg-sky-600 text-white py-2 rounded-md font-bold">Confirm</button>
-                    <button id="cancel-trade" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-800 py-2 rounded-md">Cancel</button>
+            <section class="lg:col-span-8 space-y-4">
+                <div class="glass rounded-xl p-0 shadow overflow-hidden">
+                    <div class="flex border-b border-slate-700/50">
+                        <div class="px-4 py-3 font-medium">Active Positions (<span id="active-count">0</span>)</div>
+                    </div>
+                    <div id="trades-list" class="max-h-80 overflow-auto"></div>
+                </div>
+
+                <!-- Trade History -->
+                <div class="glass rounded-xl p-4 shadow mt-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="font-medium text-slate-200">Trade History (<span id="history-count">0</span>)</div>
+                    </div>
+                    <div id="trade-history-list" class="max-h-80 overflow-auto"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="trade-modal" class="modal-bg" aria-hidden="true">
+        <div class="modal-card glass rounded-2xl p-0 shadow-lg" role="dialog" aria-modal="true"
+            aria-labelledby="modal-title">
+            <header id="modal-header" class="p-4 rounded-t-2xl border-b border-slate-700/40">
+                <div class="flex items-center justify-between">
+                    <div id="modal-title" class="flex items-center gap-3"></div>
+                    <div>
+                        <button id="modal-close" class="p-2 rounded-md text-slate-300 hover:bg-slate-700/50"
+                            aria-label="Close">✕</button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-4" id="modal-body">
+                <div id="setup-view" class="space-y-4">
+                    <div>
+                        <label class="text-sm text-slate-400">Timeframe</label>
+                        <div class="grid grid-cols-3 gap-2 mt-2">
+                            <button class="tf-btn py-2 rounded-md text-sm font-semibold bg-slate-800/40"
+                                data-tf="30">30s</button>
+                            <button class="tf-btn py-2 rounded-md text-sm font-semibold bg-slate-800/40"
+                                data-tf="60">60s</button>
+                            <button class="tf-btn py-2 rounded-md text-sm font-semibold bg-slate-800/40"
+                                data-tf="90">90s</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800/30 p-3 rounded-md flex justify-between items-center">
+                        <div class="text-sm text-slate-300">Profit: <span id="modal-profit" class="font-bold">30%</span>
+                        </div>
+                        <div class="text-sm text-slate-300">Min: <span id="modal-min" class="font-bold">50</span> USDT
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between items-baseline">
+                            <label class="text-sm text-slate-400">Amount</label>
+                            <div class="text-xs text-slate-400">Balance: <span id="fake-balance">1000.00</span> USDT
+                            </div>
+                        </div>
+
+                        <div class="relative mt-2">
+                            <input id="trade-amount" type="number" min="0" step="0.01"
+                                class="w-full bg-slate-900/30 border border-slate-700 px-3 py-3 rounded-md font-mono text-white"
+                                placeholder="Enter amount in USDT" />
+                            <div class="absolute inset-y-0 right-0 flex items-center">
+                                <span class="px-3 text-slate-400">USDT</span>
+                                <button id="max-btn"
+                                    class="px-3 py-2 text-sky-400 hover:bg-slate-700/40 rounded-r-md">Max</button>
+                            </div>
+                        </div>
+                        <p id="amount-error" class="text-xs text-red-400 mt-1 hidden"></p>
+                    </div>
+
+                    <div class="text-center">
+                        <div class="text-sm text-slate-400">Payout</div>
+                        <div id="payout-display" class="text-xl font-mono font-bold mt-1">0.00 USDT</div>
+                    </div>
+
+                    <button id="confirm-trade"
+                        class="w-full py-3 rounded-lg text-white font-bold mt-2 bg-sky-500 hover:bg-sky-600">Confirm</button>
+                </div>
+
+                <div id="active-view" class="hidden flex-col items-center space-y-4">
+                    <div class="relative w-36 h-36">
+                        <svg class="w-full h-full" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" stroke="#1f2937" stroke-width="8" fill="none"></circle>
+                            <circle id="progress-ring" cx="50" cy="50" r="45" stroke="currentColor" stroke-width="8"
+                                fill="none" stroke-linecap="round" transform="rotate(-90 50 50)"
+                                style="stroke-dasharray: 282.743; stroke-dashoffset: 0;"></circle>
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <div id="countdown-num" class="text-4xl font-bold">0</div>
+                            <div class="text-xs text-slate-400">SECONDS</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 w-full text-center">
+                        <div>
+                            <div class="text-xs text-slate-400">Entry Price</div>
+                            <div id="entry-price" class="text-lg font-mono mt-1">--</div>
+                        </div>
+                        <div>
+                            <div id="current-price-label" class="text-xs text-slate-400">Current Price</div>
+                            <div id="current-price" class="text-lg font-mono mt-1">--</div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <div id="pl-label" class="text-sm text-slate-400">Potential P/L</div>
+                        <div id="pl-value" class="text-3xl font-mono font-bold mt-1">0.00</div>
+                    </div>
+
+                    <button id="close-after"
+                        class="w-full py-3 rounded-lg text-white font-bold mt-2 bg-slate-500 hover:bg-slate-600">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Mobile Footer Navigation -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-800/80 backdrop-blur-sm border-t border-slate-700 flex justify-around py-2 z-50">
-    <a href="index.html" class="flex flex-col items-center text-slate-500">
-      <ion-icon name="home-outline" class="text-2xl"></ion-icon>
-      <span class="text-xs mt-1">Dashboard</span>
-    </a>
-    <a href="market.html" class="flex flex-col items-center text-slate-400">
-      <ion-icon name="trending-up-outline" class="text-2xl"></ion-icon>
-      <span class="text-xs mt-1">Market</span>
-    </a>
-    <a href="options.html" class="flex flex-col items-center text-sky-400">
-      <ion-icon name="options-outline" class="text-2xl"></ion-icon>
-      <span class="text-xs mt-1">Options</span>
-    </a>
-    <a href="mining.html" class="flex flex-col items-center text-slate-400">
-      <ion-icon name="flame-outline" class="text-2xl"></ion-icon>
-      <span class="text-xs mt-1">Mining</span>
-    </a>
-  </nav>
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 text-white py-2 px-4 rounded hidden z-50"></div>
 
-    <!-- Toast -->
-    <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 text-white py-2 px-3 rounded hidden z-50"></div>
-
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-
-    <!-- Lightweight Charts -->
-    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <!-- TradingView Widget -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
     <script>
+        /* LANGUAGE DROPDOWN */
+        const langBtn = document.getElementById('language-btn');
+        const langMenu = document.getElementById('language-menu');
+        langBtn.addEventListener('click', () => langMenu.classList.toggle('hidden'));
+        document.addEventListener('click', e => {
+            if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) langMenu.classList.add('hidden');
+        });
+        langMenu.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                langBtn.textContent = btn.textContent + " ▼";
+                langMenu.classList.add('hidden');
+                showToast(`Language set to ${btn.dataset.lang}`);
+            });
+        });
         document.getElementById('profile-btn').addEventListener('click', () => {
-      window.location.href = 'profile.html';
-    });
-        const OPTIONS_CONFIG = {30:{duration:30,profit:30,minAmount:50},60:{duration:60,profit:60,minAmount:10000},90:{duration:90,profit:90,minAmount:20000}};
-        const PAIRS = [
-            {id:'bitcoin',symbol:'BTC',vs:'USD',iconId:1},
-            {id:'ethereum',symbol:'ETH',vs:'USD',iconId:279},
-            {id:'solana',symbol:'SOL',vs:'USD',iconId:403}
-        ];
-        let selectedPair = PAIRS[0];
+            window.location.href = 'profile.html';
+        });
+        // ==================== CONFIG ====================
+        const OPTIONS_CONFIG = { 30: { duration: 30, profit: 30, minAmount: 50 }, 60: { duration: 60, profit: 60, minAmount: 100 }, 90: { duration: 90, profit: 90, minAmount: 200 } };
+        const PAIRS = [{ id: 'bitcoin', code: 'BTC' }, { id: 'ethereum', code: 'ETH' }, { id: 'solana', code: 'SOL' }];
+        let userBalance = 1000.00;
 
-        const pairSelect = document.getElementById('pair-select');
-        const pairTitle = document.getElementById('pair-title');
-        const pairIcon = document.getElementById('pair-icon');
-        const priceDisplay = document.getElementById('price');
-        const tradeModalBg = document.getElementById('trade-modal');
-        const modalPair = document.getElementById('modal-pair');
-        const modalDir = document.getElementById('modal-dir');
-        const tradeAmountInput = document.getElementById('trade-amount');
-        const tradeDurationSelect = document.getElementById('trade-duration');
-        const tradeError = document.getElementById('trade-error');
-        const confirmBtn = document.getElementById('confirm-trade');
-        const cancelBtn = document.getElementById('cancel-trade');
-        const closeModalBtn = document.getElementById('close-modal');
-        const toastEl = document.getElementById('toast');
-        const tradesScroll = document.getElementById('trades-scroll');
-        const activeCountEl = document.getElementById('active-count');
-
-        let chart, candleSeries;
-        let activeTrades = [];
+        // ==================== STATE ====================
+        let modalState = { open: false, direction: 'higher', pairId: PAIRS[0].id, timeframe: 30, active: false, entryPrice: null, currentPrice: null, countdown: 0, tickIntervalId: null, livePrice: null };
         let tradeHistory = [];
-        let currentTab = 'active';
-        let pendingDirection = null;
+        let tvWidget = null;
+        let currentTvPair = null;
 
-        function showToast(msg){toastEl.textContent=msg;toastEl.classList.remove('hidden');setTimeout(()=>toastEl.classList.add('hidden'),2000);}
-        function formatPrice(n){return n>=1000?'$'+Number(n).toLocaleString(undefined,{maximumFractionDigits:2}):'$'+Number(n).toFixed(2);}
-        function formatTime(ms){if(ms<=0)return'00:00';const s=Math.floor(ms/1000);const m=Math.floor(s/60).toString().padStart(2,'0');const sec=(s%60).toString().padStart(2,'0');return`${m}:${sec}`;}
+        // ==================== DOM ====================
+        const pairSelect = document.getElementById('pair-select');
+        const livePriceEl = document.getElementById('live-price');
+        const buyRiseBtn = document.getElementById('buy-rise');
+        const buyLowBtn = document.getElementById('buy-low');
+        const modal = document.getElementById('trade-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalHeader = document.getElementById('modal-header');
+        const setupView = document.getElementById('setup-view');
+        const activeView = document.getElementById('active-view');
+        const tfButtons = document.querySelectorAll('.tf-btn');
+        const modalProfit = document.getElementById('modal-profit');
+        const modalMin = document.getElementById('modal-min');
+        const amountInput = document.getElementById('trade-amount');
+        const maxBtn = document.getElementById('max-btn');
+        const payoutDisplay = document.getElementById('payout-display');
+        const confirmBtn = document.getElementById('confirm-trade');
+        const amountError = document.getElementById('amount-error');
+        const fakeBalanceEl = document.getElementById('fake-balance');
+        const countdownNum = document.getElementById('countdown-num');
+        const progressRing = document.getElementById('progress-ring');
+        const entryPriceEl = document.getElementById('entry-price');
+        const currentPriceEl = document.getElementById('current-price');
+        const plValue = document.getElementById('pl-value');
+        const closeAfterBtn = document.getElementById('close-after');
+        const activeCount = document.getElementById('active-count');
+        const tradesList = document.getElementById('trades-list');
+        const toast = document.getElementById('toast');
+        const tradeHistoryList = document.getElementById('trade-history-list');
+        const historyCount = document.getElementById('history-count');
 
-        async function fetchOHLC(coinId){
-            try{
-                const resp=await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}/ohlc?vs_currency=usd&days=1`);
-                const data=await resp.json();
-                return data.map(d=>({time:d[0]/1000,open:d[1],high:d[2],low:d[3],close:d[4]}));
-            }catch(e){console.error(e);return[];}
+        // ==================== INIT ====================
+        function init() {
+            pairSelect.innerHTML = PAIRS.map(p => `<option value="${p.id}">${p.code} / USD</option>`).join('');
+            fakeBalanceEl.textContent = userBalance.toFixed(2);
+            setTimeframe(30);
+            attachEvents();
+            fetchAndDisplayLivePrice();
+            initTradingView(PAIRS[0].id);
+            setInterval(fetchAndDisplayLivePrice, 30000);
         }
 
-        async function fetchCurrentPrice(coinId){
-            try{
-                const resp=await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd`);
-                const data=await resp.json();
-                return data[coinId].usd;
-            }catch(e){console.error(e);return 0;}
+        // ==================== EVENTS ====================
+        function attachEvents() {
+            pairSelect.addEventListener('change', () => {
+                modalState.pairId = pairSelect.value;
+                fetchAndDisplayLivePrice();
+                initTradingView(modalState.pairId);
+            });
+
+            buyRiseBtn.addEventListener('click', () => openModal('higher'));
+            buyLowBtn.addEventListener('click', () => openModal('lower'));
+
+            tfButtons.forEach(b => b.addEventListener('click', () => setTimeframe(parseInt(b.dataset.tf, 10))));
+
+            maxBtn.addEventListener('click', () => {
+                amountInput.value = userBalance.toFixed(2);
+                updatePayout();
+            });
+
+            amountInput.addEventListener('input', () => { amountError.classList.add('hidden'); updatePayout(); });
+            confirmBtn.addEventListener('click', onConfirmTrade);
+            document.getElementById('modal-close').addEventListener('click', closeModal);
+            closeAfterBtn.addEventListener('click', closeModal);
+            document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalState.open) closeModal(); });
         }
 
-        async function updateSelectedPair(coinId){
-            selectedPair = PAIRS.find(p=>p.id===coinId);
-            pairTitle.textContent=`${selectedPair.symbol}/${selectedPair.vs}`;
-            pairIcon.src=`https://assets.coingecko.com/coins/images/${selectedPair.iconId}/small.png`;
-            const ohlcData = await fetchOHLC(coinId);
-            const price = await fetchCurrentPrice(coinId);
-            priceDisplay.textContent = formatPrice(price);
+        // ==================== MODAL ====================
+        function openModal(direction) {
+            modalState.direction = direction;
+            modalState.pairId = pairSelect.value;
+            modalState.open = true;
+            modalState.active = false;
+            amountInput.value = '';
+            amountError.classList.add('hidden');
+            updateHeader();
+            setView('setup');
+            modal.style.display = 'flex';
+            modal.setAttribute('aria-hidden', 'false');
+        }
 
-            if(!chart){
-                chart = LightweightCharts.createChart(document.getElementById('chart'), {
-                    layout: { backgroundColor: '#111827', textColor: '#d1d5db' },
-                    rightPriceScale: { borderColor: '#555' },
-                    timeScale: { borderColor: '#555' },
-                });
-                candleSeries = chart.addCandlestickSeries();
+        function closeModal() {
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+            modalState.open = false;
+            clearInterval(modalState.tickIntervalId);
+            modalState.tickIntervalId = null;
+        }
+
+        function updateHeader() {
+            const isRise = modalState.direction === 'higher';
+            const icon = isRise ? '▲' : '▼';
+            const colorClass = isRise ? 'text-green-400' : 'text-red-400';
+            modalTitle.innerHTML = `<div class="flex items-center gap-2"><span class="${colorClass} text-xl font-bold">${icon}</span><div><div class="font-bold">${isRise ? 'Buy Rise' : 'Buy Low'}</div><div class="text-xs text-slate-400">${modalState.pairId.toUpperCase()}/USD</div></div></div>`;
+            modalHeader.style.background = isRise ? 'linear-gradient(180deg, rgba(4,120,87,0.06), transparent)' : 'linear-gradient(180deg, rgba(153,27,27,0.06), transparent)';
+        }
+
+        function setTimeframe(tf) {
+            modalState.timeframe = tf;
+            tfButtons.forEach(b => {
+                const isActive = parseInt(b.dataset.tf, 10) === tf;
+                b.classList.remove('bg-sky-500', 'text-white', 'shadow-lg');
+                b.classList.add('bg-slate-800/40', 'text-slate-200');
+                if (isActive) {
+                    b.classList.remove('bg-slate-800/40', 'text-slate-200');
+                    b.classList.add('bg-sky-500', 'text-white', 'shadow-lg');
+                }
+            });
+            modalProfit.textContent = OPTIONS_CONFIG[tf].profit + '%';
+            modalMin.textContent = OPTIONS_CONFIG[tf].minAmount;
+            updatePayout();
+        }
+
+        function setView(view) {
+            if (view === 'setup') { setupView.classList.remove('hidden'); activeView.classList.add('hidden'); confirmBtn.disabled = false; }
+            else { setupView.classList.add('hidden'); activeView.classList.remove('hidden'); }
+        }
+
+        function updatePayout() {
+            const amt = parseFloat(amountInput.value);
+            if (!isFinite(amt) || amt <= 0) { payoutDisplay.textContent = '0.00 USDT'; return; }
+            const payout = amt * (1 + (OPTIONS_CONFIG[modalState.timeframe].profit / 100));
+            payoutDisplay.textContent = payout.toFixed(2) + ' USDT';
+        }
+
+        // ==================== LIVE PRICE ====================
+        async function fetchAndDisplayLivePrice() {
+            const pairId = modalState.pairId;
+            try {
+                const price = await fetchCurrentPrice(pairId);
+                livePriceEl.textContent = isFinite(price) ? `$${price.toFixed(2)}` : '--';
+                modalState.livePrice = price;
+            } catch { livePriceEl.textContent = '--'; }
+        }
+
+        async function fetchCurrentPrice(pairId) {
+            const url = `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(pairId)}&vs_currencies=usd`;
+            const resp = await fetch(url);
+            const data = await resp.json();
+            return data && data[pairId] && data[pairId].usd ? Number(data[pairId].usd) : NaN;
+        }
+
+        // ==================== TRADING ====================
+        async function onConfirmTrade() {
+            const amount = parseFloat(amountInput.value);
+            const tf = modalState.timeframe;
+            const cfg = OPTIONS_CONFIG[tf];
+            if (!isFinite(amount) || amount <= 0) { amountError.textContent = 'Enter a valid amount'; amountError.classList.remove('hidden'); return; }
+            if (amount < cfg.minAmount) { amountError.textContent = `Minimum for ${tf}s is ${cfg.minAmount} USDT`; amountError.classList.remove('hidden'); return; }
+            if (amount > userBalance) { amountError.textContent = 'Insufficient balance'; amountError.classList.remove('hidden'); return; }
+
+            const entryPrice = modalState.livePrice;
+            if (!isFinite(entryPrice)) { showToast('Failed to fetch entry price.'); return; }
+
+            modalState.entryPrice = entryPrice;
+            modalState.currentPrice = entryPrice;
+            modalState.countdown = cfg.duration;
+            userBalance -= amount;
+            fakeBalanceEl.textContent = userBalance.toFixed(2);
+            setView('active');
+
+            // simulate win/lose (force)
+            const forceWin = true;
+            const finalPrice = forceWin ? (modalState.direction === 'higher' ? entryPrice * 1.01 : entryPrice * 0.99) : (modalState.direction === 'higher' ? entryPrice * 0.99 : entryPrice * 1.01);
+
+            const startTime = Date.now();
+            const durationMs = cfg.duration * 1000;
+            modalState.tickIntervalId = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const remaining = Math.max(Math.ceil((durationMs - elapsed) / 1000), 0);
+                modalState.countdown = remaining;
+                updateActiveViewUI();
+                if (remaining <= 0) {
+                    clearInterval(modalState.tickIntervalId);
+                    modalState.tickIntervalId = null;
+                    modalState.currentPrice = finalPrice;
+                    finalizeTrade(entryPrice, finalPrice, modalState.direction, amount, cfg.profit);
+                }
+            }, 250);
+
+            showToast(`Trade placed: ${modalState.pairId.toUpperCase()} ${modalState.direction} ${amount} USDT (${tf}s)`);
+        }
+
+        function updateActiveViewUI() {
+            countdownNum.textContent = modalState.countdown;
+            const radius = 45;
+            const circumference = 2 * Math.PI * radius;
+            const offset = circumference - ((modalState.countdown / OPTIONS_CONFIG[modalState.timeframe].duration) * circumference);
+            progressRing.style.strokeDashoffset = offset;
+            progressRing.style.stroke = modalState.direction === 'higher' ? '#10b981' : '#ef4444';
+
+            entryPriceEl.textContent = modalState.entryPrice?.toFixed(2) || '--';
+            currentPriceEl.textContent = modalState.currentPrice?.toFixed(2) || '--';
+
+            const stake = parseFloat(amountInput.value) || 0;
+            const profitPct = OPTIONS_CONFIG[modalState.timeframe].profit;
+            const profitAmount = stake * (profitPct / 100);
+
+            let potentialPL = -stake;
+            if (modalState.entryPrice !== null && modalState.currentPrice !== null) {
+                const cur = modalState.currentPrice;
+                const entry = modalState.entryPrice;
+                const condition = (modalState.direction === 'higher' && cur > entry) || (modalState.direction === 'lower' && cur < entry);
+                if (condition) potentialPL = profitAmount;
             }
 
-            candleSeries.setData(ohlcData);
+            plValue.textContent = (potentialPL >= 0 ? '+' : '') + potentialPL.toFixed(2) + ' USDT';
+            plValue.style.color = potentialPL >= 0 ? '#10b981' : '#ef4444';
         }
 
-        function initPairs(){
-            pairSelect.innerHTML = PAIRS.map(p=>`<option value="${p.id}">${p.symbol}/${p.vs}</option>`).join('');
-            updateSelectedPair(selectedPair.id);
-        }
+        function finalizeTrade(entry, current, direction, stake, profitPct) {
+            const isWin = (direction === 'higher' && current > entry) || (direction === 'lower' && current < entry);
+            const pnl = isWin ? stake * (profitPct / 100) : -stake;
+            if (isWin) userBalance += stake + pnl;
+            plValue.textContent = (isWin ? '+' : '-') + Math.abs(pnl).toFixed(2) + ' USDT';
+            plValue.style.color = isWin ? '#10b981' : '#ef4444';
+            fakeBalanceEl.textContent = userBalance.toFixed(2);
+            showToast(isWin ? `WIN! +${pnl.toFixed(2)} USDT` : `LOSS -${Math.abs(pnl).toFixed(2)} USDT`);
+            modalState.active = false;
 
-        pairSelect.addEventListener('change', e => updateSelectedPair(e.target.value));
-
-        document.getElementById('buy-up').addEventListener('click', ()=>openTradeModal('higher'));
-        document.getElementById('buy-down').addEventListener('click', ()=>openTradeModal('lower'));
-
-        function openTradeModal(direction){
-            pendingDirection = direction;
-            tradeModalBg.style.display = 'flex';
-            modalPair.textContent = `${selectedPair.symbol}/${selectedPair.vs}`;
-            modalDir.textContent = direction==='higher'?'Rise':'Low';
-            tradeAmountInput.value='';
-            tradeDurationSelect.value='30';
-            tradeError.classList.add('hidden'); tradeError.textContent='';
-        }
-
-        function closeTradeModal(){pendingDirection=null; tradeModalBg.style.display='none'; tradeError.classList.add('hidden'); tradeError.textContent='';}
-        cancelBtn.addEventListener('click',closeTradeModal);
-        closeModalBtn.addEventListener('click',closeTradeModal);
-        document.addEventListener('keydown', e=>{if(e.key==='Escape') closeTradeModal();});
-
-        confirmBtn.addEventListener('click', ()=>{
-            const amount=parseFloat(tradeAmountInput.value);
-            const duration=parseInt(tradeDurationSelect.value,10);
-            const cfg=OPTIONS_CONFIG[duration];
-            if(isNaN(amount)||amount<=0){tradeError.textContent='Enter a valid amount'; tradeError.classList.remove('hidden'); return;}
-            if(amount<cfg.minAmount){tradeError.textContent=`Minimum amount for ${duration}s is $${cfg.minAmount.toLocaleString()}`; tradeError.classList.remove('hidden'); return;}
-            const entryPrice=parseFloat(priceDisplay.textContent.replace(/[^0-9.-]+/g,""));
-            const payout=+(amount*(1+cfg.profit/100)).toFixed(2);
-            const id='T'+Math.random().toString(36).slice(2,9);
-            const trade={id,pairId:selectedPair.id,pair:`${selectedPair.symbol}/${selectedPair.vs}`,direction:pendingDirection,entryPrice,amount,payout,expiryTime:Date.now()+cfg.duration*1000,status:'active',closePrice:null};
-            activeTrades.push(trade); showToast(`Trade placed: ${trade.pair} ${trade.direction} $${trade.amount} (${duration}s)`); renderTrades(); closeTradeModal();
-        });
-
-        // Tabs
-        document.getElementById('tab-active').addEventListener('click', ()=>{currentTab='active'; renderTrades();});
-        document.getElementById('tab-history').addEventListener('click', ()=>{currentTab='history'; renderTrades();});
-
-        function tradeRowDom(trade){
-            const row=document.createElement('div');
-            row.className='grid grid-cols-3 sm:grid-cols-6 gap-2 items-center text-xs sm:text-sm py-3 px-4 border-b border-slate-200 dark:border-slate-700/50';
-            const isWin=trade.status==='win',isLoss=trade.status==='loss',isActive=trade.status==='active';
-            row.innerHTML=`
-                <div class="font-semibold text-slate-900 dark:text-white">${trade.pair}</div>
-                <div class="font-semibold capitalize ${trade.direction==='higher'?'text-green-500 dark:text-green-400':'text-red-500 dark:text-red-400'}">${trade.direction}</div>
-                <div class="font-mono text-slate-600 dark:text-slate-300">${trade.entryPrice.toFixed(2)}</div>
-                <div class="font-mono text-slate-600 dark:text-slate-300 hidden sm:block">${trade.closePrice?trade.closePrice.toFixed(2):'---'}</div>
-                <div class="font-semibold text-center ${isWin?'text-green-500 dark:text-green-400':isLoss?'text-red-500 dark:text-red-400':'text-sky-500 dark:text-sky-400'}">
-                    ${isActive?formatTime(trade.expiryTime-Date.now()):(trade.status||'')}
-                </div>
-                <div class="font-mono text-right">${isWin?('+'+(trade.payout-trade.amount).toFixed(2)):isLoss?('-'+trade.amount.toFixed(2)):trade.payout.toFixed(2)}</div>`;
-            return row;
-        }
-
-        function renderTrades(){
-            tradesScroll.innerHTML='';
-            const list = currentTab==='active'? activeTrades: tradeHistory;
-            list.forEach(tr=>tradesScroll.appendChild(tradeRowDom(tr)));
-            activeCountEl.textContent=String(activeTrades.length);
-        }
-
-        function checkExpiries(){
-            const now=Date.now();
-            const currentPrice=parseFloat(priceDisplay.textContent.replace(/[^0-9.-]+/g,""));
-            const expired=activeTrades.filter(t=>now>=t.expiryTime);
-            expired.forEach(tr=>{
-                const isWin=(tr.direction==='higher'&&currentPrice>tr.entryPrice)||(tr.direction==='lower'&&currentPrice<tr.entryPrice);
-                tr.status=isWin?'win':'loss';
-                tr.closePrice=currentPrice;
-                tradeHistory.unshift(tr);
+            tradeHistory.unshift({
+                id: Date.now(),
+                pair: modalState.pairId.toUpperCase(),
+                direction,
+                amount: stake,
+                entryPrice: entry,
+                closePrice: current,
+                pnl,
+                status: isWin ? 'win' : 'loss',
+                time: new Date().toLocaleString()
             });
-            activeTrades=activeTrades.filter(t=>now<tr.expiryTime);
-            renderTrades();
+
+            renderTradeHistory();
         }
 
-        setInterval(()=>{checkExpiries(); 
+        function showToast(msg, ms = 2000) { toast.textContent = msg; toast.classList.remove('hidden'); setTimeout(() => toast.classList.add('hidden'), ms); }
 
-        initPairs();
-        setInterval(()=>updateSelectedPair(selectedPair.id),30000); // refresh price every 30s
+        function renderTradeHistory() {
+            tradeHistoryList.innerHTML = tradeHistory.map(t => {
+                const color = t.status === 'win' ? 'text-green-400' : 'text-red-400';
+                const arrow = t.direction === 'higher' ? '▲' : '▼';
+                return `<div class="px-4 py-2 border-b border-slate-700/30 flex justify-between items-center">
+                    <div>
+                        <div class="font-semibold">${t.pair} ${arrow}</div>
+                        <div class="text-xs text-slate-400">Entry: $${t.entryPrice.toFixed(2)}, Close: $${t.closePrice.toFixed(2)}</div>
+                    </div>
+                    <div class="font-mono ${color}">
+                        ${t.pnl >= 0 ? '+' : ''}${t.pnl.toFixed(2)} USDT
+                    </div>
+                </div>`;
+            }).join('');
+            historyCount.textContent = tradeHistory.length;
+        }
+
+        // ==================== TRADINGVIEW ====================
+        // Declare outside the function
+        let resizeObserver = null;
+
+        function initTradingView(pairId) {
+            if (currentTvPair === pairId) return; // only load once per coin
+            currentTvPair = pairId;
+
+            // Remove existing widget
+            if (tvWidget && tvWidget.remove) tvWidget.remove();
+
+            // Create new widget
+            tvWidget = new TradingView.widget({
+                container_id: "tv-chart",
+                symbol: pairId.toUpperCase() + "USD",
+                interval: "60",
+                timezone: "Etc/UTC",
+                theme: "dark",
+                style: "1",
+                locale: "en",
+                toolbar_bg: "#f1f3f6",
+                enable_publishing: false,
+                hide_top_toolbar: true,
+                withdateranges: true,
+                allow_symbol_change: true,
+                details: true,
+                hideideas: true
+            });
+
+            // Use ResizeObserver for better responsiveness
+            if (!resizeObserver) {
+                resizeObserver = new ResizeObserver(() => {
+                    if (tvWidget && tvWidget.resize) tvWidget.resize();
+                });
+                resizeObserver.observe(document.getElementById('tv-chart'));
+            }
+        }
+
+
+        init();
     </script>
-
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
+
 </html>
