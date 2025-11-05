@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mining Dashboard</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -15,74 +14,7 @@
             color: #fff;
         }
 
-        .container {
-            max-width: 1024px;
-            margin: auto;
-            padding: 16px;
-        }
-
-        .card {
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat p:first-child {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .plans {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .plan {
-            background: rgba(30, 41, 59, 0.6);
-            border-radius: 16px;
-            padding: 16px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .plan:hover {
-            background: rgba(30, 41, 59, 0.8);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-        }
-
-        .plan span {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: bold;
-        }
-
-        .plan button {
-            padding: 8px 14px;
-            border: none;
-            border-radius: 12px;
-            background: linear-gradient(to bottom, #14b8a6, #06b6d4);
-            color: #fff;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 8px;
-        }
-
-        .plan button:disabled {
-            background: #10b98180;
-            cursor: not-allowed;
-        }
-
-        /* Modal styles */
+        /* Modal */
         .modal {
             position: fixed;
             top: 0;
@@ -100,22 +32,11 @@
             background: #1e293b;
             border-radius: 12px;
             padding: 24px;
-            max-width: 400px;
+            max-width: 500px;
             width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
             position: relative;
-        }
-
-        .modal-content h3 {
-            margin-top: 0;
-            margin-bottom: 12px;
-            font-size: 1.25rem;
-            color: #06b6d4;
-        }
-
-        .modal-content p {
-            font-size: 0.875rem;
-            line-height: 1.4;
-            color: #cbd5e1;
         }
 
         .close-btn {
@@ -129,234 +50,201 @@
             cursor: pointer;
         }
 
-        input[type="number"] {
-            width: 100%;
-            padding: 8px;
-            border-radius: 8px;
-            border: 1px solid #334155;
-            background: #1e293b;
-            color: #fff;
-            margin-bottom: 8px;
-        }
-
-        label {
-            font-size: 0.8rem;
-            color: #94a3b8;
-        }
-
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        button.primary {
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            background: linear-gradient(to bottom, #14b8a6, #06b6d4);
-            color: #fff;
+        .section-title {
+            text-align: center;
             font-weight: bold;
-            cursor: pointer;
-            border: none;
-        }
-
-        button.primary:disabled {
-            background: #10b98180;
-            cursor: not-allowed;
-        }
-
-        /* Invested plans list */
-        .invested h2 {
-            font-size: 1.25rem;
+            font-size: 1.125rem;
             color: #06b6d4;
-            margin-bottom: 12px;
+            margin-bottom: 0.5rem;
         }
 
-        .invested-plan {
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
-            transition: 0.2s;
-        }
-
-        .invested-plan span {
-            display: block;
-            margin-bottom: 6px;
-        }
-
-        .badge {
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            display: inline-block;
-        }
-
-        .active {
-            text-align: center;
-            width: 50px;
-            background: #e90e0e;
-            color: #fff;
-        }
-
-        .completed {
-            text-align: center;
-            width: 50px;
-            background: #22c55e;
-            color: #fff;
+        .highlight {
+            background: linear-gradient(to right, #22d3ee, #3b82f6);
+            -webkit-background-clip: text;
+            color: transparent;
         }
     </style>
 </head>
 
 <body>
 
-    <header  class="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50">
-            <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-                <span class="font-semibold text-lg tracking-tight text-sky-400" id="backBtn">SmartAirTrade</span>
-                <nav class="hidden md:flex items-center space-x-4">
-                    <!-- Dashboard -->
-                    <a href="index.html"
-                        class="flex flex-col items-center justify-center text-slate-400 w-14 h-14 ">
-                        <ion-icon name="home-outline" class="text-2xl"></ion-icon>
-                        <span class="text-xs mt-1">Dashboard</span>
-                    </a>
-
-                    <!-- Market -->
-                    <a href="market.html" class="flex flex-col items-center justify-center text-slate-400  w-14 h-14">
-                        <ion-icon name="trending-up-outline" class="text-2xl"></ion-icon>
-                        <span class="text-xs mt-1">Market</span>
-                    </a>
-
-                    <!-- Options -->
-                    <a href="options.html" class="flex flex-col items-center justify-center text-slate-400  w-14 h-14">
-                        <ion-icon name="options-outline" class="text-2xl "></ion-icon>
-                        <span class="text-xs mt-1 ">Options</span>
-                    </a>
-
-                    <!-- Mining -->
-                    <a href="mining.html" class="flex flex-col items-center justify-center text-slate-400 w-14 h-14 ">
-                        <ion-icon name="flame-outline" class="text-2xl text-sky-500"></ion-icon>
-                        <span class="text-xs mt-1 text-sky-500">Mining</span>
-                    </a>
-                </nav>
-                <div class="flex items-center space-x-2">
-                    <button id="profile-btn"
-                        class="px-3 py-2 rounded-md bg-slate-700 hover:bg-slate-600 flex items-center">
-                        <ion-icon name="settings-outline" class="mr-1 text-white"></ion-icon> Profile
-                    </button>
-                     
-                
-                    <button id="rulesBtn" onclick="openRules()">Rules</button>
-            
+    <header
+        class="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50 p-4 flex justify-between items-center">
+        <span class="font-semibold text-lg tracking-tight text-sky-400 cursor-pointer" id="backBtn">SmartAirTrade</span>
+        <!-- Header Nav -->
+      <nav class="hidden md:flex items-center space-x-4">
+        <a href="index.html" class="flex flex-col items-center justify-center text-slate-500 w-14 h-14">
+          <ion-icon name="home-outline" class="text-2xl "></ion-icon>
+          <span class="text-xs mt-1">Dashboard</span>
+        </a>
+        <a href="market.html" class="flex flex-col items-center justify-center text-slate-400 w-14 h-14">
+          <ion-icon name="trending-up-outline" class="text-2xl"></ion-icon>
+          <span class="text-xs mt-1">Market</span>
+        </a>
+        <a href="options.html" class="flex flex-col items-center justify-center text-slate-400 w-14 h-14">
+          <ion-icon name="options-outline" class="text-2xl"></ion-icon>
+          <span class="text-xs mt-1">Options</span>
+        </a>
+        <a href="mining.html" class="flex flex-col items-center justify-center text-sky-400 w-14 h-14">
+          <ion-icon name="flame-outline" class="text-2xl"></ion-icon>
+          <span class="text-xs mt-1">Mining</span>
+        </a>
+      </nav>
+        <div class="flex items-center space-x-2">
+            <!-- Language Selector -->
+            <div class="relative" id="language-dropdown">
+                <button id="language-btn" class="px-3 py-2 rounded-md bg-slate-700 hover:bg-slate-600 text-white">
+                    🇺🇸 English ▼
+                </button>
+                <div id="language-menu"
+                    class="absolute right-0 mt-2 w-48 bg-slate-800 rounded-md shadow-lg py-1 hidden z-50">
+                    <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="en">🇺🇸 English</button>
+                    <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="zh-HK">🇭🇰 Chinese
+                        (HK)</button>
+                    <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="ko">🇰🇷 Korean</button>
+                    <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="es">🇪🇸 Spanish</button>
+                    <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="ar">🇸🇦 Arabic</button>
                 </div>
-
             </div>
-           
+            <button id="profile-btn" class="px-3 py-2 rounded-md bg-slate-700 hover:bg-slate-600 flex items-center">
+                <ion-icon name="settings-outline" class="mr-1 text-white"></ion-icon> Profile
+            </button>
+            <button id="rulesBtn">Rules</button>
+        </div>
+    </header>
+  <!-- Mobile Footer Navigation -->
+ <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-800/80 backdrop-blur-sm border-t border-slate-700 flex justify-around py-2 z-50">
+    <a href="index.html" class="flex flex-col items-center text-slate-500">
+      <ion-icon name="home-outline" class="text-2xl"></ion-icon>
+      <span class="text-xs mt-1">Dashboard</span>
+    </a>
+    <a href="market.html" class="flex flex-col items-center text-slate-400">
+      <ion-icon name="trending-up-outline" class="text-2xl"></ion-icon>
+      <span class="text-xs mt-1">Market</span>
+    </a>
+    <a href="options.html" class="flex flex-col items-center text-slate-400">
+      <ion-icon name="options-outline" class="text-2xl"></ion-icon>
+      <span class="text-xs mt-1">Options</span>
+    </a>
+    <a href="mining.html" class="flex flex-col items-center text-sky-400">
+      <ion-icon name="flame-outline" class="text-2xl"></ion-icon>
+      <span class="text-xs mt-1">Mining</span>
+    </a>
+  </nav>
 
-        </header>
-    <div class="container">
 
-        
-
-
-        <div class="card stats">
-            <div class="stat">
-                <p id="funds">0</p>
+    <div class="container max-w-6xl mx-auto px-4 py-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div class="bg-slate-800/70 p-6 rounded-xl text-center shadow-md">
+                <p id="funds" class="text-2xl font-bold">0</p>
                 <p>Funds in Custody</p>
             </div>
-            <div class="stat">
-                <p id="profits">0</p>
+            <div class="bg-slate-800/70 p-6 rounded-xl text-center shadow-md">
+                <p id="profits" class="text-2xl font-bold">0</p>
                 <p>Total Profits</p>
             </div>
-            <div class="stat">
-                <p id="orders">0</p>
+            <div class="bg-slate-800/70 p-6 rounded-xl text-center shadow-md">
+                <p id="orders" class="text-2xl font-bold">0</p>
                 <p>Orders</p>
             </div>
         </div>
 
+        <!-- Featured Plans -->
         <section>
-            <h2>Featured Plans</h2>
-            <div class="plans" id="plans"></div>
+            <h2 class="text-xl font-bold text-sky-400 mb-4">Featured Mining Plans</h2>
+            <div class="plans grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="plans"></div>
         </section>
 
-        <section class="invested">
-            <div id="activePlansContainer" style="display:none;">
-                <h2>Active Plans</h2>
-                <div id="activePlans"></div>
+        <!-- Invested Plans -->
+        <section class="mt-8">
+            <div id="activePlansContainer" class="mb-6" style="display:none;">
+                <h2 class="text-lg font-bold text-sky-400 mb-4">Active Plans</h2>
+                <div id="activePlans" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
-            <div id="completedPlansContainer" style="display:none; margin-top:24px;">
-                <h2>Completed Plans</h2>
-                <div id="completedPlans"></div>
+            <div id="completedPlansContainer" class="mb-6" style="display:none;">
+                <h2 class="text-lg font-bold text-sky-400 mb-4">Completed Plans</h2>
+                <div id="completedPlans" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
         </section>
-
     </div>
-<!-- Mobile Footer Navigation -->
-<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-800/80 backdrop-blur-sm border-t border-slate-700 flex justify-around py-2 z-50">
-  <!-- Dashboard -->
-  <a href="index.html" class="flex flex-col items-center text-slate-400">
-    <ion-icon name="home-outline" class="text-2xl"></ion-icon>
-    <span class="text-xs mt-1">Dashboard</span>
-  </a>
 
-  <!-- Market -->
-  <a href="market.html" class="flex flex-col items-center text-slate-400">
-    <ion-icon name="trending-up-outline" class="text-2xl"></ion-icon>
-    <span class="text-xs mt-1">Market</span>
-  </a>
-
-  <!-- Options -->
-  <a href="options.html" class="flex flex-col items-center text-slate-400">
-    <ion-icon name="options-outline" class="text-2xl"></ion-icon>
-    <span class="text-xs mt-1">Options</span>
-  </a>
-
-  <!-- Mining -->
-  <a href="mining.html" class="flex flex-col items-center text-sky-500">
-    <ion-icon name="flame-outline" class="text-2xl"></ion-icon>
-    <span class="text-xs mt-1">Mining</span>
-  </a>
-</nav>
-    <!-- Modal -->
-    <div id="modal" class="modal">
-        <div class="modal-content" id="modalContent">
-            <button class="close-btn" onclick="closeModal()">×</button>
-            <h3 id="modalTitle">Title</h3>
-            <p id="modalText">Details here...</p>
-
-            <div id="investmentForm" style="display:none;">
-                <label for="amount">Amount (USDT)</label>
-                <input type="number" id="amount" placeholder="Enter amount">
-                <div class="checkbox-container">
-                    <input type="checkbox" id="agree">
-                    <label for="agree">I agree to terms</label>
+    <!-- Rules Modal -->
+    <div id="rulesModal" class="modal flex">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeRules()">×</button>
+            <h1 class="text-xl font-bold text-cyan-400 mb-4">Mining Rules</h1>
+            <section>
+                <h2 class="section-title">Non Stop Profits</h2>
+                <p class="text-sm text-slate-400 leading-relaxed text-center">
+                    Brick-moving is through USDT transfer. Platform carries out arbitrage, and participants earn income
+                    during capital deployment.
+                </p>
+            </section>
+            <section class="bg-slate-800/60 rounded-xl p-6 border border-slate-700 shadow-lg my-4">
+                <h3 class="section-title">Product Highlights</h3>
+                <div class="flex justify-around items-start mb-4 text-center">
+                    <div class="flex flex-col items-center">
+                        <div
+                            class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center mb-2 shadow-lg">
+                            💰</div>
+                        <p class="font-bold text-sm">Save as you go</p>
+                        <p class="text-xs text-slate-400">Dividend Payout Period</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div
+                            class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center mb-2 shadow-lg">
+                            💳</div>
+                        <p class="font-bold text-sm">Post daily</p>
+                        <p class="text-xs text-slate-400">Current Interest</p>
+                    </div>
                 </div>
-                <button class="primary" id="buyBtn" onclick="buyPlan()" disabled>Buy</button>
-            </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center text-xs">
+                    <div class="border border-slate-600 rounded-full px-3 py-2 text-slate-300">Unlimited income</div>
+                    <div class="border border-slate-600 rounded-full px-3 py-2 text-slate-300">100% Security guarantee
+                    </div>
+                    <div class="border border-slate-600 rounded-full px-3 py-2 text-slate-300 leading-tight">Interest
+                        starts next day of deposit</div>
+                </div>
+            </section>
+            <section>
+                <div class="flex items-center justify-center mb-4">
+                    <div class="flex-grow h-px bg-gradient-to-l from-cyan-400 to-transparent"></div>
+                    <h2 class="mx-4 section-title">Profit Calculations</h2>
+                    <div class="flex-grow h-px bg-gradient-to-r from-cyan-400 to-transparent"></div>
+                </div>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    Example: 10,000 USDT in 10-day plan with 1.5% daily yield gives 150 USDT/day. Total 1,500 USDT after
+                    10 days. Principal refunded after expiration.
+                </p>
+            </section>
         </div>
     </div>
 
+    <!-- JS -->
     <script>
-        document.getElementById('profile-btn').addEventListener('click', () => {
-       window.location.href = 'profile.html';
-    });
-        const plansData = [
-            { id: 1, cycle: 10, yield: 15, minLimit: 100 },
-            { id: 2, cycle: 20, yield: 30, minLimit: 200 },
-            { id: 3, cycle: 30, yield: 50, minLimit: 500 }
-        ];
-        const backBtn = document.getElementById('backBtn');
-        backBtn.addEventListener('click', () => {
-            window.location.href = 'index.html';
+        /* LANGUAGE DROPDOWN */
+        const langBtn = document.getElementById('language-btn');
+        const langMenu = document.getElementById('language-menu');
+        langBtn.addEventListener('click', () => langMenu.classList.toggle('hidden'));
+        document.addEventListener('click', e => {
+            if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) langMenu.classList.add('hidden');
         });
-
-
+        langMenu.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                langBtn.textContent = btn.textContent + " ▼";
+                langMenu.classList.add('hidden');
+                showToast(`Language set to ${btn.dataset.lang}`);
+            });
+        });
+        const plansData = [
+            { id: 1, cycle: 10, yield: 15, minLimit: 100, maxLimit: 1000 },
+            { id: 2, cycle: 20, yield: 30, minLimit: 200, maxLimit: 5000 },
+            { id: 3, cycle: 30, yield: 50, minLimit: 500, maxLimit: 10000 }
+        ];
         let userBalance = 1000;
         let selectedPlan = null;
         let investedPlans = [];
+
         const plansContainer = document.getElementById('plans');
         const fundsEl = document.getElementById('funds');
         const profitsEl = document.getElementById('profits');
@@ -368,89 +256,104 @@
             plansContainer.innerHTML = '';
             plansData.forEach(plan => {
                 const div = document.createElement('div');
-                div.className = 'plan';
+                div.className = "plan bg-slate-900 border border-slate-700 rounded-2xl p-6 flex flex-col justify-between shadow-md hover:shadow-xl hover:scale-105 transition transform duration-200";
                 div.innerHTML = `
-      <span>Cycle: ${plan.cycle} Days</span>
-      <span>Yield: ${plan.yield}%</span>
-      <span>Minimum: ${plan.minLimit} USDT</span>
-      <button>Invest</button>
+      <div>
+        <h3 class="text-xl font-bold text-sky-400 mb-3">${plan.cycle}-Day Plan</h3>
+        <p class="text-white/80 mb-2">Yield: <span class="font-semibold text-white">${plan.yield}%</span></p>
+        <p class="text-white/80 mb-2">Min: <span class="font-semibold">${plan.minLimit} USDT</span></p>
+        <p class="text-white/80 mb-3">Max: <span class="font-semibold">${plan.maxLimit} USDT</span></p>
+      </div>
+      <button class="w-full py-3 mt-auto rounded-xl bg-gradient-to-r from-green-500 to-teal-400 font-bold text-white hover:from-green-600 hover:to-teal-500" onclick="openInvestModal(${plan.id})">Invest</button>
     `;
-                div.querySelector('button').addEventListener('click', e => {
-                    e.stopPropagation();
-                    openPlanModal(plan);
-                });
-                div.addEventListener('click', () => openPlanModal(plan));
                 plansContainer.appendChild(div);
             });
         }
 
+        // Dynamic Invest Modal
+        function openInvestModal(planId) {
+            selectedPlan = plansData.find(p => p.id === planId);
+
+            // Create modal dynamically
+            let modal = document.createElement('div');
+            modal.className = 'modal flex';
+            modal.id = 'dynamicInvestModal';
+            modal.innerHTML = `
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeInvestModal()">×</button>
+      <h1 class="text-xl font-bold text-cyan-400 mb-4">${selectedPlan.cycle}-Day Mining Plan</h1>
+      <p class="mb-2">Yield: ${selectedPlan.yield}%</p>
+      <p class="mb-2">Min: ${selectedPlan.minLimit} USDT | Max: ${selectedPlan.maxLimit} USDT</p>
+      <input type="number" id="dynamicAmount" placeholder="Enter amount" class="w-full p-2 rounded mb-2 text-black"/>
+      <div class="flex items-center mb-4">
+        <input type="checkbox" id="dynamicAgree" class="mr-2"/>
+        <label for="dynamicAgree">I agree to terms</label>
+      </div>
+      <button id="dynamicBuyBtn" class="w-full py-3 rounded-xl bg-gradient-to-b from-teal-400 to-cyan-500 font-bold text-white disabled:opacity-50" disabled>Buy</button>
+    </div>
+  `;
+            document.body.appendChild(modal);
+
+            const amountInput = document.getElementById('dynamicAmount');
+            const agreeInput = document.getElementById('dynamicAgree');
+            const buyBtn = document.getElementById('dynamicBuyBtn');
+
+            amountInput.addEventListener('input', updateDynamicBuyButton);
+            agreeInput.addEventListener('change', updateDynamicBuyButton);
+
+            buyBtn.addEventListener('click', () => {
+                const amount = parseFloat(amountInput.value);
+                if (!amount || amount < selectedPlan.minLimit || amount > selectedPlan.maxLimit || !agreeInput.checked) return;
+                userBalance -= amount;
+                investedPlans.push({ ...selectedPlan, amount, startTime: Date.now() });
+                updateStats();
+                renderInvestedPlans();
+                alert(`Invested ${amount} USDT in ${selectedPlan.cycle}-Day Plan!`);
+                closeInvestModal();
+            });
+
+            function updateDynamicBuyButton() {
+                const amount = parseFloat(amountInput.value);
+                buyBtn.disabled = !amount || amount < selectedPlan.minLimit || amount > selectedPlan.maxLimit || !agreeInput.checked;
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeInvestModal() {
+            const modal = document.getElementById('dynamicInvestModal');
+            if (modal) modal.remove();
+        }
+
+        // Rules Modal
+        document.getElementById('rulesBtn').addEventListener('click', () => document.getElementById('rulesModal').style.display = 'flex');
+        function closeRules() { document.getElementById('rulesModal').style.display = 'none'; }
+
+        // Invested Plans
         function renderInvestedPlans() {
             activeContainer.innerHTML = '';
             completedContainer.innerHTML = '';
             const now = Date.now();
-            let hasActive = false;
-            let hasCompleted = false;
-
+            let hasActive = false, hasCompleted = false;
             investedPlans.forEach(inv => {
                 const expiry = inv.startTime + inv.cycle * 24 * 60 * 60 * 1000;
                 const div = document.createElement('div');
-                div.className = 'invested-plan';
+                div.className = 'bg-slate-800/60 p-4 rounded-xl shadow-md';
                 div.innerHTML = `
-      <span>Cycle: ${inv.cycle} Days</span>
-      <span>Invested: ${inv.amount.toFixed(2)} USDT</span>
-      <span>Est. Profit: ${(inv.amount * inv.yield / 100).toFixed(2)} USDT</span>
+      <div class="flex justify-between items-center mb-2">
+        <span class="font-semibold">${inv.cycle}-Day Plan</span>
+        <span class="px-2 py-1 rounded-full text-xs font-bold ${now >= expiry ? 'bg-green-500' : 'bg-red-500'}">
+          ${now >= expiry ? 'Completed' : 'Active'}
+        </span>
+      </div>
+      <p>Invested: <span class="font-bold">${inv.amount.toFixed(2)} USDT</span></p>
+      <p>Est. Profit: <span class="font-bold">${(inv.amount * inv.yield / 100).toFixed(2)} USDT</span></p>
     `;
-                const badge = document.createElement('span');
-                badge.className = 'badge';
-                if (now >= expiry) { badge.classList.add('completed'); badge.textContent = 'Completed'; completedContainer.appendChild(div); hasCompleted = true; }
-                else { badge.classList.add('active'); badge.textContent = 'Active'; activeContainer.appendChild(div); hasActive = true; }
-                div.appendChild(badge);
+                if (now >= expiry) { completedContainer.appendChild(div); hasCompleted = true; }
+                else { activeContainer.appendChild(div); hasActive = true; }
             });
-
             document.getElementById('activePlansContainer').style.display = hasActive ? 'block' : 'none';
             document.getElementById('completedPlansContainer').style.display = hasCompleted ? 'block' : 'none';
-        }
-
-        function openModal(title, text, showForm = false, plan = null) {
-            document.getElementById('modal').style.display = 'flex';
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalText').textContent = text;
-            const form = document.getElementById('investmentForm');
-            if (showForm && plan) {
-                form.style.display = 'block';
-                selectedPlan = plan;
-                document.getElementById('amount').value = '';
-                document.getElementById('agree').checked = false;
-                updateBuyButton();
-            } else form.style.display = 'none';
-        }
-        function closeModal() { document.getElementById('modal').style.display = 'none'; }
-        function openRules() {
-            openModal('Mining Rules', 'Invest USDT, earn daily income according to plan cycle. Profits issued daily. Principal returned after maturity.');
-            document.getElementById('rulesBtn').classList.add('active');
-            setTimeout(() => document.getElementById('rulesBtn').classList.remove('active'), 500);
-        }
-        function openPlanModal(plan) { openModal(`${plan.cycle}-Day Mining Plan`, `Yield: ${plan.yield}%, Minimum: ${plan.minLimit} USDT`, true, plan); }
-
-        document.getElementById('amount').addEventListener('input', updateBuyButton);
-        document.getElementById('agree').addEventListener('change', updateBuyButton);
-
-        function updateBuyButton() {
-            const amount = parseFloat(document.getElementById('amount').value);
-            const agree = document.getElementById('agree').checked;
-            const btn = document.getElementById('buyBtn');
-            btn.disabled = !agree || !amount || amount < selectedPlan.minLimit || amount > userBalance;
-        }
-
-        function buyPlan() {
-            const amount = parseFloat(document.getElementById('amount').value);
-            if (!selectedPlan || isNaN(amount)) return;
-            userBalance -= amount;
-            investedPlans.push({ ...selectedPlan, amount, startTime: Date.now() });
-            updateStats();
-            renderInvestedPlans();
-            alert(`Invested ${amount} USDT in ${selectedPlan.cycle}-Day Plan!`);
-            closeModal();
         }
 
         function updateStats() {
@@ -459,16 +362,17 @@
             ordersEl.textContent = investedPlans.length;
         }
 
+        // Initialize
         renderPlans();
         renderInvestedPlans();
         updateStats();
+
+        document.getElementById('backBtn').addEventListener('click', () => window.location.href = 'index.html');
+        document.getElementById('profile-btn').addEventListener('click', () => window.location.href = 'profile.html');
     </script>
 
- <!--
-    - ionicon link
-  -->
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
 
 </html>
