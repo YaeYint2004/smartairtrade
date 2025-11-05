@@ -71,6 +71,19 @@
 
     <!-- Profile button -->
     <div class="flex items-center space-x-2">
+      <!-- Language Selector -->
+        <div class="relative" id="language-dropdown">
+          <button id="language-btn" class="px-3 py-2 rounded-md bg-slate-700 hover:bg-slate-600 text-white">
+            🇺🇸 English ▼
+          </button>
+          <div id="language-menu" class="absolute right-0 mt-2 w-48 bg-slate-800 rounded-md shadow-lg py-1 hidden z-50">
+            <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="en">🇺🇸 English</button>
+            <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="zh-HK">🇭🇰 Chinese (HK)</button>
+            <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="ko">🇰🇷 Korean</button>
+            <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="es">🇪🇸 Spanish</button>
+            <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="ar">🇸🇦 Arabic</button>
+          </div>
+        </div>
       <button id="profile-btn" class="px-3 py-2 bg-slate-700 rounded-md hover:bg-slate-600 flex items-center">
         <ion-icon name="settings-outline" class="mr-1 text-white"></ion-icon> Profile
       </button>
@@ -116,6 +129,23 @@
 </nav>
   </main>
   <script>
+    /* LANGUAGE DROPDOWN */
+    const langBtn = document.getElementById('language-btn');
+    const langMenu = document.getElementById('language-menu');
+    langBtn.addEventListener('click', () => langMenu.classList.toggle('hidden'));
+    document.addEventListener('click', e => {
+      if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) langMenu.classList.add('hidden');
+    });
+    langMenu.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        langBtn.textContent = btn.textContent + " ▼";
+        langMenu.classList.add('hidden');
+        showToast(`Language set to ${btn.dataset.lang}`);
+      });
+    });
+    document.getElementById('profile-btn').addEventListener('click', () => {
+      window.location.href = 'profile.html';
+    });
     document.getElementById('profile-btn').addEventListener('click', () => {
       window.location.href = 'profile.html';
     });
