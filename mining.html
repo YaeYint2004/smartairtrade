@@ -235,9 +235,10 @@
             });
         });
         const plansData = [
-            { id: 1, cycle: 10, yield: 15, minLimit: 100, maxLimit: 1000 },
-            { id: 2, cycle: 20, yield: 30, minLimit: 200, maxLimit: 5000 },
-            { id: 3, cycle: 30, yield: 50, minLimit: 500, maxLimit: 10000 }
+            { id: 1, cycle: 5, yield: 15, minLimit: 100},
+            { id: 2, cycle: 10, yield: 30, minLimit: 5000},
+            { id: 3, cycle: 20, yield: 50, minLimit: 10000},
+            { id: 4, cycle: 30, yield: 70, minLimit: 30000}
         ];
         let userBalance = 1000;
         let selectedPlan = null;
@@ -260,7 +261,6 @@
         <h3 class="text-xl font-bold text-sky-400 mb-3">${plan.cycle}-Day Plan</h3>
         <p class="text-white/80 mb-2">Yield: <span class="font-semibold text-white">${plan.yield}%</span></p>
         <p class="text-white/80 mb-2">Min: <span class="font-semibold">${plan.minLimit} USDT</span></p>
-        <p class="text-white/80 mb-3">Max: <span class="font-semibold">${plan.maxLimit} USDT</span></p>
       </div>
       <button class="w-full py-3 mt-auto rounded-xl bg-gradient-to-r from-green-500 to-teal-400 font-bold text-white hover:from-green-600 hover:to-teal-500" onclick="openInvestModal(${plan.id})">Invest</button>
     `;
