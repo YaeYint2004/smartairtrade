@@ -1,117 +1,170 @@
-<!DOCTYPE html>
+
+
+  <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mining Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Arial', sans-serif;
-            background-color: #0f172a;
-            color: #fff;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartAirTrade - Mining</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #0f172a;
+      color: #fff;
+    }
 
-        /* Modal */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
+    .dashboard-section {
+      background: linear-gradient(135deg, #0A0F2C, #12193D);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0px 0px 12px rgba(0,0,0,.35);
+      margin-top: 18px;
+      color: #fff;
+    }
 
-        .modal-content {
-            background: #1e293b;
-            border-radius: 12px;
-            padding: 24px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-        }
+    .fund-box {
+      text-align: center;
+      padding: 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
 
-        .close-btn {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: transparent;
-            border: none;
-            font-size: 1.25rem;
-            color: #94a3b8;
-            cursor: pointer;
-        }
+    .fund-box .value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-top: 6px;
+    }
 
-        .section-title {
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.125rem;
-            color: #06b6d4;
-            margin-bottom: 0.5rem;
-        }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 14px;
+    }
 
-        .highlight {
-            background: linear-gradient(to right, #22d3ee, #3b82f6);
-            -webkit-background-clip: text;
-            color: transparent;
-        }
-    </style>
+    .stat-box {
+      flex: 1;
+      text-align: center;
+      background: rgba(255,255,255,0.07);
+      padding: 16px;
+      border-radius: 12px;
+    }
+
+    .stat-box .value {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    /* Plan card */
+    .plan {
+      position: relative;
+    }
+    .plan .status-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      border-radius: 9999px;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .modal-content {
+      background: #0b1220;
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 540px;
+      width: 92%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: transparent;
+      border: none;
+      font-size: 1.25rem;
+      color: #94a3b8;
+      cursor: pointer;
+    }
+
+    #toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: rgba(14, 165, 233, 0.95);
+      color: #00111a;
+      padding: 10px 14px;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.5);
+      display: none;
+      z-index: 200;
+    }
+  </style>
 </head>
 
 <body>
+  <!-- HEADER -->
+  <header class="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50 p-4 flex justify-between items-center">
+    <span class="font-semibold text-lg tracking-tight text-sky-400 cursor-pointer" id="backBtn">SmartAirTrade</span>
 
-    <header
-        class="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50 p-4 flex justify-between items-center">
-        <span class="font-semibold text-lg tracking-tight text-sky-400 cursor-pointer" id="backBtn">SmartAirTrade</span>
-        <!-- Header Nav -->
-      <nav class="hidden md:flex items-center space-x-4">
-        <a href="index.html" class="flex flex-col items-center justify-center text-slate-500 w-14 h-14">
-          <ion-icon name="home-outline" class="text-2xl "></ion-icon>
-          <span class="text-xs mt-1">Dashboard</span>
-        </a>
-        <a href="market.html" class="flex flex-col items-center justify-center text-slate-400 w-14 h-14">
-          <ion-icon name="trending-up-outline" class="text-2xl"></ion-icon>
-          <span class="text-xs mt-1">Market</span>
-        </a>
-        <a href="options.html" class="flex flex-col items-center justify-center text-slate-400 w-14 h-14">
-          <ion-icon name="options-outline" class="text-2xl"></ion-icon>
-          <span class="text-xs mt-1">Options</span>
-        </a>
-        <a href="mining.html" class="flex flex-col items-center justify-center text-sky-400 w-14 h-14">
-          <ion-icon name="flame-outline" class="text-2xl"></ion-icon>
-          <span class="text-xs mt-1">Mining</span>
-        </a>
-      </nav>
-        <div class="flex items-center space-x-2">
-            <!-- Language Selector -->
-            <div class="relative" id="language-dropdown">
-                <button id="language-btn" class="px-3 py-2 rounded-md bg-slate-700 hover:bg-slate-600 text-white">
-                    🇺🇸 English ▼
-                </button>
-                <div id="language-menu"
-                    class="absolute right-0 mt-2 w-48 bg-slate-800 rounded-md shadow-lg py-1 hidden z-50">
-                    <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="en">🇺🇸 English</button>
-                    <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="zh-HK">🇭🇰 Chinese
-                        (HK)</button>
-                    <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="ko">🇰🇷 Korean</button>
-                    <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="es">🇪🇸 Spanish</button>
-                    <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="ar">🇸🇦 Arabic</button>
-                </div>
-            </div>
-            
-            <button id="rulesBtn">Rules</button>
+    <nav class="hidden md:flex items-center space-x-4">
+      <a href="index.html" class="flex flex-col items-center justify-center text-slate-500 w-14 h-14">
+        <ion-icon name="home-outline" class="text-2xl"></ion-icon>
+        <span class="text-xs mt-1">Dashboard</span>
+      </a>
+      <a href="market.html" class="flex flex-col items-center justify-center text-slate-400 w-14 h-14">
+        <ion-icon name="trending-up-outline" class="text-2xl"></ion-icon>
+        <span class="text-xs mt-1">Market</span>
+      </a>
+      <a href="options.html" class="flex flex-col items-center justify-center text-slate-400 w-14 h-14">
+        <ion-icon name="options-outline" class="text-2xl"></ion-icon>
+        <span class="text-xs mt-1">Options</span>
+      </a>
+      <a href="mining.html" class="flex flex-col items-center justify-center text-sky-400 w-14 h-14">
+        <ion-icon name="flame-outline" class="text-2xl"></ion-icon>
+        <span class="text-xs mt-1">Mining</span>
+      </a>
+    </nav>
+
+    <div class="flex items-center space-x-2">
+      <div class="relative" id="language-dropdown">
+        <button id="language-btn" class="px-3 py-2 rounded-md bg-slate-700 hover:bg-slate-600 text-white">🇺🇸 English ▼</button>
+        <div id="language-menu" class="absolute right-0 mt-2 w-48 bg-slate-800 rounded-md shadow-lg py-1 hidden z-50">
+          <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="en">🇺🇸 English</button>
+          <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="zh-HK">🇭🇰 Chinese (HK)</button>
+          <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="ko">🇰🇷 Korean</button>
+          <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="es">🇪🇸 Spanish</button>
+          <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="ar">🇸🇦 Arabic</button>
         </div>
-    </header>
-  <!-- Mobile Footer Navigation -->
- <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-800/80 backdrop-blur-sm border-t border-slate-700 flex justify-around py-2 z-50">
+      </div>
+      <button id="rulesBtn" class="px-3 py-2 rounded-md bg-slate-700 hover:bg-slate-600 text-white">Rules</button>
+    </div>
+  </header>
+
+  <!-- MOBILE NAV -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-800/80 backdrop-blur-sm border-t border-slate-700 flex justify-around py-2 z-50">
     <a href="index.html" class="flex flex-col items-center text-slate-500">
       <ion-icon name="home-outline" class="text-2xl"></ion-icon>
       <span class="text-xs mt-1">Dashboard</span>
@@ -130,246 +183,249 @@
     </a>
   </nav>
 
-
-    <div class="container max-w-6xl mx-auto px-4 py-6">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <div class="bg-slate-800/70 p-6 rounded-xl text-center shadow-md">
-                <p id="funds" class="text-2xl font-bold">0</p>
-                <p>Funds in Custody</p>
-            </div>
-            <div class="bg-slate-800/70 p-6 rounded-xl text-center shadow-md">
-                <p id="profits" class="text-2xl font-bold">0</p>
-                <p>Total Profits</p>
-            </div>
-            <div class="bg-slate-800/70 p-6 rounded-xl text-center shadow-md">
-                <p id="orders" class="text-2xl font-bold">0</p>
-                <p>Orders</p>
-            </div>
-        </div>
-
-        <!-- Featured Plans -->
-        <section>
-            <h2 class="text-xl font-bold text-sky-400 mb-4">Featured Mining Plans</h2>
-            <div class="plans grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="plans"></div>
-        </section>
-
-        <!-- Invested Plans -->
-        <section class="mt-8">
-            <div id="activePlansContainer" class="mb-6" style="display:none;">
-                <h2 class="text-lg font-bold text-sky-400 mb-4">Active Plans</h2>
-                <div id="activePlans" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-            </div>
-            <div id="completedPlansContainer" class="mb-6" style="display:none;">
-                <h2 class="text-lg font-bold text-sky-400 mb-4">Completed Plans</h2>
-                <div id="completedPlans" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-            </div>
-        </section>
+  <!-- DASHBOARD -->
+  <div class="dashboard-section p-5">
+    <div class="fund-box">
+      <div>Fund Balance</div>
+      <div class="value"><span id="funds">2000</span> USDT</div>
     </div>
 
-    <!-- Rules Modal -->
-    <div id="rulesModal" class="modal flex">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeRules()">×</button>
-            <h1 class="text-xl font-bold text-cyan-400 mb-4">Mining Rules</h1>
-            <section>
-                <h2 class="section-title">Non Stop Profits</h2>
-                <p class="text-sm text-slate-400 leading-relaxed text-center">
-                    Brick-moving is through USDT transfer. Platform carries out arbitrage, and participants earn income
-                    during capital deployment.
-                </p>
-            </section>
-            <section class="bg-slate-800/60 rounded-xl p-6 border border-slate-700 shadow-lg my-4">
-                <h3 class="section-title">Product Highlights</h3>
-                <div class="flex justify-around items-start mb-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <div
-                            class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center mb-2 shadow-lg">
-                            💰</div>
-                        <p class="font-bold text-sm">Save as you go</p>
-                        <p class="text-xs text-slate-400">Dividend Payout Period</p>
-                    </div>
-                    <div class="flex flex-col items-center">
-                        <div
-                            class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center mb-2 shadow-lg">
-                            💳</div>
-                        <p class="font-bold text-sm">Post daily</p>
-                        <p class="text-xs text-slate-400">Current Interest</p>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center text-xs">
-                    <div class="border border-slate-600 rounded-full px-3 py-2 text-slate-300">Unlimited income</div>
-                    <div class="border border-slate-600 rounded-full px-3 py-2 text-slate-300">100% Security guarantee
-                    </div>
-                    <div class="border border-slate-600 rounded-full px-3 py-2 text-slate-300 leading-tight">Interest
-                        starts next day of deposit</div>
-                </div>
-            </section>
-            <section>
-                <div class="flex items-center justify-center mb-4">
-                    <div class="flex-grow h-px bg-gradient-to-l from-cyan-400 to-transparent"></div>
-                    <h2 class="mx-4 section-title">Profit Calculations</h2>
-                    <div class="flex-grow h-px bg-gradient-to-r from-cyan-400 to-transparent"></div>
-                </div>
-                <p class="text-sm text-slate-400 leading-relaxed">
-                    Example: 10,000 USDT in 10-day plan with 1.5% daily yield gives 150 USDT/day. Total 1,500 USDT after
-                    10 days. Principal refunded after expiration.
-                </p>
-            </section>
-        </div>
-    </div>
-
-    <!-- JS -->
-    <script>
-        /* LANGUAGE DROPDOWN */
-        const langBtn = document.getElementById('language-btn');
-        const langMenu = document.getElementById('language-menu');
-        langBtn.addEventListener('click', () => langMenu.classList.toggle('hidden'));
-        document.addEventListener('click', e => {
-            if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) langMenu.classList.add('hidden');
-        });
-        langMenu.querySelectorAll('button').forEach(btn => {
-            btn.addEventListener('click', () => {
-                langBtn.textContent = btn.textContent + " ▼";
-                langMenu.classList.add('hidden');
-                showToast(`Language set to ${btn.dataset.lang}`);
-            });
-        });
-        const plansData = [
-            { id: 1, cycle: 5, yield: 15, minLimit: 100},
-            { id: 2, cycle: 10, yield: 30, minLimit: 5000},
-            { id: 3, cycle: 20, yield: 50, minLimit: 10000},
-            { id: 4, cycle: 30, yield: 70, minLimit: 30000}
-        ];
-        let userBalance = 1000;
-        let selectedPlan = null;
-        let investedPlans = [];
-
-        const plansContainer = document.getElementById('plans');
-        const fundsEl = document.getElementById('funds');
-        const profitsEl = document.getElementById('profits');
-        const ordersEl = document.getElementById('orders');
-        const activeContainer = document.getElementById('activePlans');
-        const completedContainer = document.getElementById('completedPlans');
-
-        function renderPlans() {
-            plansContainer.innerHTML = '';
-            plansData.forEach(plan => {
-                const div = document.createElement('div');
-                div.className = "plan bg-slate-900 border border-slate-700 rounded-2xl p-6 flex flex-col justify-between shadow-md hover:shadow-xl hover:scale-105 transition transform duration-200";
-                div.innerHTML = `
-      <div>
-        <h3 class="text-xl font-bold text-sky-400 mb-3">${plan.cycle}-Day Plan</h3>
-        <p class="text-white/80 mb-2">Yield: <span class="font-semibold text-white">${plan.yield}%</span></p>
-        <p class="text-white/80 mb-2">Min: <span class="font-semibold">${plan.minLimit} USDT</span></p>
+    <div class="stat-row">
+      <div class="stat-box">
+        <div>Total Profit</div>
+        <div class="value"><span id="profits">0</span> USDT</div>
       </div>
-      <button class="w-full py-3 mt-auto rounded-xl bg-gradient-to-r from-green-500 to-teal-400 font-bold text-white hover:from-green-600 hover:to-teal-500" onclick="openInvestModal(${plan.id})">Invest</button>
-    `;
-                plansContainer.appendChild(div);
-            });
-        }
+      <div class="stat-box">
+        <div>My Orders</div>
+        <div class="value"><span id="orders">0</span></div>
+      </div>
+    </div>
+  </div>
 
-        // Dynamic Invest Modal
-        function openInvestModal(planId) {
-            selectedPlan = plansData.find(p => p.id === planId);
+  <!-- FEATURED PLANS -->
+  <section>
+    <h2 class="text-xl font-bold text-sky-400 mb-4 p-5">Featured Mining Plans</h2>
+    <div class="plans grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-5" id="plans"></div>
+  </section>
 
-            // Create modal dynamically
-            let modal = document.createElement('div');
-            modal.className = 'modal flex';
-            modal.id = 'dynamicInvestModal';
-            modal.innerHTML = `
+  <!-- Rules Modal -->
+  <div id="rulesModal" class="modal">
     <div class="modal-content">
-      <button class="close-btn" onclick="closeInvestModal()">×</button>
-      <h1 class="text-xl font-bold text-cyan-400 mb-4">${selectedPlan.cycle}-Day Mining Plan</h1>
-      <p class="mb-2">Yield: ${selectedPlan.yield}%</p>
-      <p class="mb-2">Min: ${selectedPlan.minLimit} USDT | Max: ${selectedPlan.maxLimit} USDT</p>
-      <input type="number" id="dynamicAmount" placeholder="Enter amount" class="w-full p-2 rounded mb-2 text-black"/>
-      <div class="flex items-center mb-4">
-        <input type="checkbox" id="dynamicAgree" class="mr-2"/>
-        <label for="dynamicAgree">I agree to terms</label>
-      </div>
-      <button id="dynamicBuyBtn" class="w-full py-3 rounded-xl bg-gradient-to-b from-teal-400 to-cyan-500 font-bold text-white disabled:opacity-50" disabled>Buy</button>
+      <button class="close-btn" onclick="closeRules()">×</button>
+      <h1 class="text-xl font-bold text-cyan-400 mb-4">Mining Rules</h1>
+      <section>
+        <h2 class="section-title">Non Stop Profits</h2>
+        <p class="text-sm text-slate-400 leading-relaxed text-center">
+          Brick-moving is through USDT transfer. Platform carries out arbitrage, and participants earn income during capital deployment.
+        </p>
+      </section>
+
+      <section class="bg-slate-800/60 rounded-xl p-6 border border-slate-700 shadow-lg my-4">
+        <h3 class="section-title">Product Highlights</h3>
+        <div class="flex justify-around items-start mb-4 text-center">
+          <div class="flex flex-col items-center">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center mb-2 shadow-lg">💰</div>
+            <p class="font-bold text-sm">Save as you go</p>
+            <p class="text-xs text-slate-400">Dividend Payout Period</p>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center mb-2 shadow-lg">💳</div>
+            <p class="font-bold text-sm">Post daily</p>
+            <p class="text-xs text-slate-400">Current Interest</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center text-xs">
+          <div class="border border-slate-600 rounded-full px-3 py-2 text-slate-300">Unlimited income</div>
+          <div class="border border-slate-600 rounded-full px-3 py-2 text-slate-300">100% Security guarantee</div>
+          <div class="border border-slate-600 rounded-full px-3 py-2 text-slate-300 leading-tight">Interest starts next day of deposit</div>
+        </div>
+      </section>
+
+      <section>
+        <div class="flex items-center justify-center mb-4">
+          <div class="flex-grow h-px bg-gradient-to-l from-cyan-400 to-transparent"></div>
+          <h2 class="mx-4 section-title">Profit Calculations</h2>
+          <div class="flex-grow h-px bg-gradient-to-r from-cyan-400 to-transparent"></div>
+        </div>
+        <p class="text-sm text-slate-400 leading-relaxed">
+          Example: 10,000 USDT in 10-day plan with 1.5% daily yield gives 150 USDT/day. Total 1,500 USDT after 10 days. Principal refunded after expiration.
+        </p>
+      </section>
     </div>
-  `;
-            document.body.appendChild(modal);
+  </div>
 
-            const amountInput = document.getElementById('dynamicAmount');
-            const agreeInput = document.getElementById('dynamicAgree');
-            const buyBtn = document.getElementById('dynamicBuyBtn');
+  <div id="toast"></div>
 
-            amountInput.addEventListener('input', updateDynamicBuyButton);
-            agreeInput.addEventListener('change', updateDynamicBuyButton);
+  <!-- JS -->
+  <script>
+    const plansData = [
+      { id: 1, cycle: 5, yield: 15, minLimit: 100 },
+      { id: 2, cycle: 10, yield: 30, minLimit: 5000 },
+      { id: 3, cycle: 20, yield: 50, minLimit: 10000 },
+      { id: 4, cycle: 30, yield: 70, minLimit: 30000 }
+    ];
 
-            buyBtn.addEventListener('click', () => {
-                const amount = parseFloat(amountInput.value);
-                if (!amount || amount < selectedPlan.minLimit || amount > selectedPlan.maxLimit || !agreeInput.checked) return;
-                userBalance -= amount;
-                investedPlans.push({ ...selectedPlan, amount, startTime: Date.now() });
-                updateStats();
-                renderInvestedPlans();
-                alert(`Invested ${amount} USDT in ${selectedPlan.cycle}-Day Plan!`);
-                closeInvestModal();
-            });
+    let userBalance = 2000;
+    let selectedPlan = null;
+    let investedPlans = [];
 
-            function updateDynamicBuyButton() {
-                const amount = parseFloat(amountInput.value);
-                buyBtn.disabled = !amount || amount < selectedPlan.minLimit || amount > selectedPlan.maxLimit || !agreeInput.checked;
-            }
+    const plansContainer = document.getElementById('plans');
+    const fundsEl = document.getElementById('funds');
+    const profitsEl = document.getElementById('profits');
+    const ordersEl = document.getElementById('orders');
 
-            modal.style.display = 'flex';
+    function showToast(msg, ms = 2500) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      clearTimeout(t._timeout);
+      t._timeout = setTimeout(() => t.style.display = 'none', ms);
+    }
+
+    function renderPlans() {
+      plansContainer.innerHTML = '';
+      const now = Date.now();
+
+      plansData.forEach(plan => {
+        const invested = investedPlans.find(inv => inv.id === plan.id);
+        const investedAmount = invested ? invested.amount : 0;
+        const estProfit = invested ? (invested.amount * plan.yield / 100).toFixed(2) : 0;
+        const isActive = invested ? now < invested.endTime : false;
+
+        const div = document.createElement('div');
+        div.className = `plan bg-slate-900 border border-slate-700 rounded-2xl p-6 flex flex-col justify-between shadow-md hover:shadow-xl hover:scale-105 transition transform duration-200
+          ${isActive ? 'border-green-500 bg-slate-800/60' : ''}`;
+        div.innerHTML = `
+          ${invested ? `<span class="status-badge ${isActive ? 'bg-green-500' : 'bg-gray-500'}">${isActive ? 'Active' : 'Completed'}</span>` : ''}
+          <div>
+            <h3 class="text-xl font-bold text-sky-400 mb-3">${plan.cycle}-Day Plan</h3>
+            <p class="text-white/80 mb-2">Yield: <span class="font-semibold text-white">${plan.yield}%</span></p>
+            <p class="text-white/80 mb-2">Min: <span class="font-semibold">${plan.minLimit} USDT</span></p>
+            ${invested ? `
+              <p>Invested: <span class="font-bold">${investedAmount.toFixed(2)} USDT</span></p>
+              <p>Est. Profit: <span class="font-bold">${estProfit} USDT</span></p>
+            ` : ''}
+          </div>
+          <button class="w-full py-3 mt-auto rounded-xl bg-gradient-to-r from-green-500 to-teal-400 font-bold text-white hover:from-green-600 hover:to-teal-500" onclick="openInvestModal(${plan.id})">
+            ${invested ? 'Invest More' : 'Invest'}
+          </button>
+        `;
+        plansContainer.appendChild(div);
+      });
+    }
+
+    function openInvestModal(planId) {
+      selectedPlan = plansData.find(p => p.id === planId);
+
+      let modal = document.getElementById('dynamicInvestModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.className = 'modal flex';
+        modal.id = 'dynamicInvestModal';
+        modal.innerHTML = `
+          <div class="modal-content">
+            <button class="close-btn" onclick="closeInvestModal()">×</button>
+            <h1 id="modalTitle" class="text-xl font-bold text-cyan-400 mb-4"></h1>
+            <p id="modalYield" class="mb-2"></p>
+            <p id="modalMin" class="mb-2"></p>
+            <input type="number" id="dynamicAmount" placeholder="Enter amount (USDT)" class="w-full p-2 rounded mb-2 text-black" />
+            <div class="flex items-center mb-4">
+              <input type="checkbox" id="dynamicAgree" class="mr-2"/>
+              <label for="dynamicAgree">I agree to terms</label>
+            </div>
+            <div id="dynamicHint" class="text-xs text-slate-400 mb-3"></div>
+            <button id="dynamicBuyBtn" class="w-full py-3 rounded-xl bg-gradient-to-b from-teal-400 to-cyan-500 font-bold text-white disabled:opacity-50" disabled>Buy</button>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      }
+
+      document.getElementById('modalTitle').textContent = `${selectedPlan.cycle}-Day Mining Plan`;
+      document.getElementById('modalYield').textContent = `Yield: ${selectedPlan.yield}%`;
+      document.getElementById('modalMin').textContent = `Min: ${selectedPlan.minLimit} USDT`;
+
+      const amountInput = document.getElementById('dynamicAmount');
+      const agreeInput = document.getElementById('dynamicAgree');
+      const buyBtn = document.getElementById('dynamicBuyBtn');
+      const hint = document.getElementById('dynamicHint');
+
+      amountInput.value = '';
+      agreeInput.checked = false;
+      buyBtn.disabled = true;
+      hint.textContent = `You must invest at least ${selectedPlan.minLimit} USDT and have sufficient balance.`;
+
+      function updateDynamicBuyButton() {
+        const amount = parseFloat(amountInput.value);
+        const validAmount = amount && amount >= selectedPlan.minLimit && amount <= userBalance;
+        buyBtn.disabled = !validAmount || !agreeInput.checked;
+        if (amount && amount < selectedPlan.minLimit) hint.textContent = `Minimum is ${selectedPlan.minLimit} USDT.`;
+        else if (amount && amount > userBalance) hint.textContent = `You don't have enough balance (current: ${userBalance.toFixed(2)} USDT).`;
+        else hint.textContent = `You must invest at least ${selectedPlan.minLimit} USDT and have sufficient balance.`;
+      }
+
+      amountInput.addEventListener('input', updateDynamicBuyButton);
+      agreeInput.addEventListener('change', updateDynamicBuyButton);
+
+      buyBtn.onclick = () => {
+        const amount = parseFloat(amountInput.value);
+        if (!amount || amount < selectedPlan.minLimit || amount > userBalance || !agreeInput.checked) return;
+
+        userBalance -= amount;
+
+        const existing = investedPlans.find(inv => inv.id === selectedPlan.id);
+        if (existing) {
+          existing.amount += amount;
+          existing.startTime = Date.now();
+          existing.endTime = Date.now() + selectedPlan.cycle * 24 * 60 * 60 * 1000;
+        } else {
+          const endTime = Date.now() + selectedPlan.cycle * 24 * 60 * 60 * 1000;
+          investedPlans.push({ ...selectedPlan, amount, startTime: Date.now(), endTime });
         }
 
-        function closeInvestModal() {
-            const modal = document.getElementById('dynamicInvestModal');
-            if (modal) modal.remove();
-        }
-
-        // Rules Modal
-        document.getElementById('rulesBtn').addEventListener('click', () => document.getElementById('rulesModal').style.display = 'flex');
-        function closeRules() { document.getElementById('rulesModal').style.display = 'none'; }
-
-        // Invested Plans
-        function renderInvestedPlans() {
-            activeContainer.innerHTML = '';
-            completedContainer.innerHTML = '';
-            const now = Date.now();
-            let hasActive = false, hasCompleted = false;
-            investedPlans.forEach(inv => {
-                const expiry = inv.startTime + inv.cycle * 24 * 60 * 60 * 1000;
-                const div = document.createElement('div');
-                div.className = 'bg-slate-800/60 p-4 rounded-xl shadow-md';
-                div.innerHTML = `
-      <div class="flex justify-between items-center mb-2">
-        <span class="font-semibold">${inv.cycle}-Day Plan</span>
-        <span class="px-2 py-1 rounded-full text-xs font-bold ${now >= expiry ? 'bg-green-500' : 'bg-red-500'}">
-          ${now >= expiry ? 'Completed' : 'Active'}
-        </span>
-      </div>
-      <p>Invested: <span class="font-bold">${inv.amount.toFixed(2)} USDT</span></p>
-      <p>Est. Profit: <span class="font-bold">${(inv.amount * inv.yield / 100).toFixed(2)} USDT</span></p>
-    `;
-                if (now >= expiry) { completedContainer.appendChild(div); hasCompleted = true; }
-                else { activeContainer.appendChild(div); hasActive = true; }
-            });
-            document.getElementById('activePlansContainer').style.display = hasActive ? 'block' : 'none';
-            document.getElementById('completedPlansContainer').style.display = hasCompleted ? 'block' : 'none';
-        }
-
-        function updateStats() {
-            fundsEl.textContent = userBalance.toFixed(2);
-            profitsEl.textContent = investedPlans.reduce((sum, p) => sum + p.amount * p.yield / 100, 0).toFixed(2);
-            ordersEl.textContent = investedPlans.length;
-        }
-
-        // Initialize
         renderPlans();
-        renderInvestedPlans();
         updateStats();
+        showToast(`Invested ${amount.toFixed(2)} USDT in ${selectedPlan.cycle}-Day Plan`);
+        closeInvestModal();
+      };
 
-        document.getElementById('backBtn').addEventListener('click', () => window.location.href = 'index.html');
-    </script>
+      modal.style.display = 'flex';
+    }
 
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    function closeInvestModal() {
+      const modal = document.getElementById('dynamicInvestModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function updateStats() {
+      fundsEl.textContent = userBalance.toFixed(2);
+      profitsEl.textContent = investedPlans.reduce((sum, p) => sum + (p.amount * p.yield / 100), 0).toFixed(2);
+      ordersEl.textContent = investedPlans.length;
+    }
+
+    document.getElementById('rulesBtn').addEventListener('click', () => document.getElementById('rulesModal').style.display = 'flex');
+    function closeRules() { document.getElementById('rulesModal').style.display = 'none'; }
+
+    const langBtn = document.getElementById('language-btn');
+    const langMenu = document.getElementById('language-menu');
+    langBtn.addEventListener('click', () => langMenu.classList.toggle('hidden'));
+    document.addEventListener('click', e => {
+      if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) langMenu.classList.add('hidden');
+    });
+    langMenu.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        langBtn.textContent = btn.textContent + " ▼";
+        langMenu.classList.add('hidden');
+        showToast(`Language set to ${btn.dataset.lang}`);
+      });
+    });
+
+    document.getElementById('backBtn').addEventListener('click', () => window.location.href = 'index.html');
+
+    renderPlans();
+    updateStats();
+  </script>
+
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
-
 </html>
