@@ -166,19 +166,21 @@
                         <div id="live-price" class="text-2xl font-mono text-white mt-1">--</div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3">
-                        <button id="buy-rise"
-                            class="bg-green-600 hover:bg-green-700 text-white py-3 rounded-md font-bold">Buy
-                            Rise</button>
-                        <button id="buy-low"
-                            class="bg-red-600 hover:bg-red-700 text-white py-3 rounded-md font-bold">Buy Low</button>
-                    </div>
+                    
 
                     <!-- TradingView Chart Container -->
                     <div class="glass rounded-xl p-4 shadow mt-4">
                         <div class="text-xs text-slate-400 mb-1">Price Chart</div>
                         <div id="tv-chart" class="w-full h-full min-h-[400px] overflow-hidden"></div>
 
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="buy-rise"
+                            class="bg-green-600 hover:bg-green-700 text-white py-3 rounded-md font-bold">Buy
+                            Rise</button>
+                        <button id="buy-low"
+                            class="bg-red-600 hover:bg-red-700 text-white py-3 rounded-md font-bold">Buy Low</button>
                     </div>
                 </div>
             </section>
@@ -325,13 +327,49 @@
         document.getElementById('profile-btn').addEventListener('click', () => {
             window.location.href = 'profile.html';
         });
+
         // ==================== CONFIG ====================
-        const OPTIONS_CONFIG = { 30: { duration: 30, profit: 30, minAmount: 100 }, 60: { duration: 60, profit: 60, minAmount: 10000 }, 90: { duration: 90, profit: 90, minAmount: 20000 } };
-        const PAIRS = [{ id: 'bitcoin', code: 'BTC' }, { id: 'ethereum', code: 'ETH' }, { id: 'solana', code: 'SOL' }];
+        const OPTIONS_CONFIG = {
+            30: { duration: 30, profit: 30, minAmount: 100 },
+            60: { duration: 60, profit: 60, minAmount: 10000 },
+            90: { duration: 90, profit: 90, minAmount: 20000 }
+        };
+
+        const PAIRS = [
+            { id: 'bitcoin', code: 'BTC' },
+            { id: 'ethereum', code: 'ETH' },
+            { id: 'solana', code: 'SOL' },
+            { id: 'cardano', code: 'ADA' },
+            { id: 'binancecoin', code: 'BNB' },
+            { id: 'ripple', code: 'XRP' },
+            { id: 'dogecoin', code: 'DOGE' }
+        ];
+
+        const TV_SYMBOLS = {
+            bitcoin: 'BINANCE:BTCUSDT',
+            ethereum: 'BINANCE:ETHUSDT',
+            solana: 'BINANCE:SOLUSDT',
+            cardano: 'BINANCE:ADAUSDT',
+            binancecoin: 'BINANCE:BNBUSDT',
+            ripple: 'BINANCE:XRPUSDT',
+            dogecoin: 'BINANCE:DOGEUSDT'
+        };
+
         let userBalance = 1000.00;
 
         // ==================== STATE ====================
-        let modalState = { open: false, direction: 'higher', pairId: PAIRS[0].id, timeframe: 30, active: false, entryPrice: null, currentPrice: null, countdown: 0, tickIntervalId: null, livePrice: null };
+        let modalState = {
+            open: false,
+            direction: 'higher',
+            pairId: PAIRS[0].id,
+            timeframe: 30,
+            active: false,
+            entryPrice: null,
+            currentPrice: null,
+            countdown: 0,
+            tickIntervalId: null,
+            livePrice: null
+        };
         let tradeHistory = [];
         let tvWidget = null;
         let currentTvPair = null;
@@ -369,7 +407,7 @@
 
         // ==================== INIT ====================
         function init() {
-            pairSelect.innerHTML = PAIRS.map(p => `<option value="${p.id}">${p.code} / USD</option>`).join('');
+            pairSelect.innerHTML = PAIRS.map(p => `<option value="${p.id}">${p.code} / USDT</option>`).join('');
             fakeBalanceEl.textContent = userBalance.toFixed(2);
             setTimeframe(30);
             attachEvents();
@@ -511,128 +549,84 @@
                 if (remaining <= 0) {
                     clearInterval(modalState.tickIntervalId);
                     modalState.tickIntervalId = null;
-                    modalState.currentPrice = finalPrice;
-                    finalizeTrade(entryPrice, finalPrice, modalState.direction, amount, cfg.profit);
+                    modalState.active = false;
+                    const pl = modalState.direction === 'higher' ? finalPrice > entryPrice ? amount * (cfg.profit / 100) : -amount : finalPrice < entryPrice ? amount * (cfg.profit / 100) : -amount;
+                    userBalance += amount + (pl > 0 ? pl : 0);
+                    fakeBalanceEl.textContent = userBalance.toFixed(2);
+                    plValue.textContent = pl.toFixed(2);
+                    addTradeHistory(modalState.pairId, modalState.direction, amount, entryPrice, finalPrice, pl);
                 }
-            }, 250);
-
-            showToast(`Trade placed: ${modalState.pairId.toUpperCase()} ${modalState.direction} ${amount} USDT (${tf}s)`);
+            }, 200);
         }
 
         function updateActiveViewUI() {
             countdownNum.textContent = modalState.countdown;
             const radius = 45;
             const circumference = 2 * Math.PI * radius;
-            const offset = circumference - ((modalState.countdown / OPTIONS_CONFIG[modalState.timeframe].duration) * circumference);
-            progressRing.style.strokeDashoffset = offset;
-            progressRing.style.stroke = modalState.direction === 'higher' ? '#10b981' : '#ef4444';
-
-            entryPriceEl.textContent = modalState.entryPrice?.toFixed(2) || '--';
-            currentPriceEl.textContent = modalState.currentPrice?.toFixed(2) || '--';
-
-            const stake = parseFloat(amountInput.value) || 0;
-            const profitPct = OPTIONS_CONFIG[modalState.timeframe].profit;
-            const profitAmount = stake * (profitPct / 100);
-
-            let potentialPL = -stake;
-            if (modalState.entryPrice !== null && modalState.currentPrice !== null) {
-                const cur = modalState.currentPrice;
-                const entry = modalState.entryPrice;
-                const condition = (modalState.direction === 'higher' && cur > entry) || (modalState.direction === 'lower' && cur < entry);
-                if (condition) potentialPL = profitAmount;
-            }
-
-            plValue.textContent = (potentialPL >= 0 ? '+' : '') + potentialPL.toFixed(2) + ' USDT';
-            plValue.style.color = potentialPL >= 0 ? '#10b981' : '#ef4444';
+            progressRing.style.strokeDashoffset = circumference * (1 - modalState.countdown / OPTIONS_CONFIG[modalState.timeframe].duration);
+            entryPriceEl.textContent = modalState.entryPrice.toFixed(2);
+            currentPriceEl.textContent = (modalState.livePrice || modalState.entryPrice).toFixed(2);
+            plValue.textContent = modalState.active ? '--' : '0.00';
         }
 
-        function finalizeTrade(entry, current, direction, stake, profitPct) {
-            const isWin = (direction === 'higher' && current > entry) || (direction === 'lower' && current < entry);
-            const pnl = isWin ? stake * (profitPct / 100) : -stake;
-            if (isWin) userBalance += stake + pnl;
-            plValue.textContent = (isWin ? '+' : '-') + Math.abs(pnl).toFixed(2) + ' USDT';
-            plValue.style.color = isWin ? '#10b981' : '#ef4444';
-            fakeBalanceEl.textContent = userBalance.toFixed(2);
-            showToast(isWin ? `WIN! +${pnl.toFixed(2)} USDT` : `LOSS -${Math.abs(pnl).toFixed(2)} USDT`);
-            modalState.active = false;
-
-            tradeHistory.unshift({
-                id: Date.now(),
-                pair: modalState.pairId.toUpperCase(),
-                direction,
-                amount: stake,
-                entryPrice: entry,
-                closePrice: current,
-                pnl,
-                status: isWin ? 'win' : 'loss',
-                time: new Date().toLocaleString()
-            });
-
-            renderTradeHistory();
-        }
-
-        function showToast(msg, ms = 2000) { toast.textContent = msg; toast.classList.remove('hidden'); setTimeout(() => toast.classList.add('hidden'), ms); }
-
-        function renderTradeHistory() {
-            tradeHistoryList.innerHTML = tradeHistory.map(t => {
-                const color = t.status === 'win' ? 'text-green-400' : 'text-red-400';
-                const arrow = t.direction === 'higher' ? '▲' : '▼';
-                return `<div class="px-4 py-2 border-b border-slate-700/30 flex justify-between items-center">
-                    <div>
-                        <div class="font-semibold">${t.pair} ${arrow}</div>
-                        <div class="text-xs text-slate-400">Entry: $${t.entryPrice.toFixed(2)}, Close: $${t.closePrice.toFixed(2)}</div>
-                    </div>
-                    <div class="font-mono ${color}">
-                        ${t.pnl >= 0 ? '+' : ''}${t.pnl.toFixed(2)} USDT
-                    </div>
-                </div>`;
-            }).join('');
+        function addTradeHistory(pairId, dir, amount, entry, exit, pl) {
+            tradeHistory.unshift({ pairId, dir, amount, entry, exit, pl, timestamp: new Date() });
             historyCount.textContent = tradeHistory.length;
-        }
+            tradeHistoryList.innerHTML = tradeHistory.map(t => {
+    const color = t.pl >= 0 ? 'text-green-400' : 'text-red-400';
+    const arrow = t.dir === 'higher' ? '▲' : '▼';
+    const time = t.timestamp.toLocaleTimeString();
+    return `
+    <div class="flex justify-between items-center px-4 py-3 border-b border-slate-700/20 hover:bg-slate-800/40 rounded-lg transition-colors">
+        <div class="flex flex-col">
+            <div class="font-semibold text-slate-200">${t.pairId.toUpperCase()} ${arrow}</div>
+            <div class="text-xs text-slate-400">Entry: $${t.entry.toFixed(2)}, Close: $${t.exit.toFixed(2)}</div>
+            <div class="text-xs text-slate-400">${time}</div>
+        </div>
+        <div class="font-mono ${color} text-sm font-semibold">
+            ${t.pl >= 0 ? '+' : ''}${t.pl.toFixed(2)} USDT
+        </div>
+    </div>`;
+}).join('');
+}
 
         // ==================== TRADINGVIEW ====================
-        // Declare outside the function
-        let resizeObserver = null;
-
         function initTradingView(pairId) {
-            if (currentTvPair === pairId) return; // only load once per coin
+            const symbol = TV_SYMBOLS[pairId];
+            if (!symbol) return;
+            if (tvWidget && currentTvPair === pairId) return;
+            if (tvWidget) { tvWidget.remove(); tvWidget = null; }
+
             currentTvPair = pairId;
-
-            // Remove existing widget
-            if (tvWidget && tvWidget.remove) tvWidget.remove();
-
-            // Create new widget
             tvWidget = new TradingView.widget({
-                container_id: "tv-chart",
-                symbol: pairId.toUpperCase() + "USD",
-                interval: "60",
+                container_id: 'tv-chart',
+                width: "100%",
+                height: 400,
+                symbol: symbol,
+                interval: "1",
                 timezone: "Etc/UTC",
                 theme: "dark",
                 style: "1",
                 locale: "en",
                 toolbar_bg: "#f1f3f6",
                 enable_publishing: false,
-                hide_top_toolbar: true,
-                withdateranges: true,
                 allow_symbol_change: true,
-                details: true,
-                hideideas: true
+                hide_top_toolbar: true,
+                hide_side_toolbar: false,
             });
-
-            // Use ResizeObserver for better responsiveness
-            if (!resizeObserver) {
-                resizeObserver = new ResizeObserver(() => {
-                    if (tvWidget && tvWidget.resize) tvWidget.resize();
-                });
-                resizeObserver.observe(document.getElementById('tv-chart'));
-            }
         }
 
+        // ==================== TOAST ====================
+        function showToast(msg) {
+            toast.textContent = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
 
         init();
     </script>
+
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
 
 </html>
