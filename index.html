@@ -40,25 +40,18 @@
       <span class="font-semibold text-lg tracking-tight text-sky-400">SmartAirTrade</span>
       <!-- Header Nav -->
       <nav class="hidden md:flex items-center space-x-4">
-        <!-- Dashboard -->
         <a href="index.html" class="flex flex-col items-center justify-center text-slate-400 w-14 h-14 text-sky-500">
           <ion-icon name="home-outline" class="text-2xl text-sky-500"></ion-icon>
           <span class="text-xs mt-1 text-sky-500">Dashboard</span>
         </a>
-
-        <!-- Market -->
         <a href="market.html" class="flex flex-col items-center justify-center text-slate-400  w-14 h-14">
           <ion-icon name="trending-up-outline" class="text-2xl"></ion-icon>
           <span class="text-xs mt-1">Market</span>
         </a>
-
-        <!-- Options -->
         <a href="options.html" class="flex flex-col items-center justify-center text-slate-400  w-14 h-14">
           <ion-icon name="options-outline" class="text-2xl"></ion-icon>
           <span class="text-xs mt-1">Options</span>
         </a>
-
-        <!-- Mining -->
         <a href="mining.html" class="flex flex-col items-center justify-center text-slate-400 w-14 h-14">
           <ion-icon name="flame-outline" class="text-2xl"></ion-icon>
           <span class="text-xs mt-1">Mining</span>
@@ -67,20 +60,19 @@
 
       <div class="flex items-center space-x-2">
         <!-- Language Selector -->
-            <div class="relative" id="language-dropdown">
-                <button id="language-btn" class="px-3 py-2 rounded-md bg-slate-700 hover:bg-slate-600 text-white">
-                    🇺🇸 English ▼
-                </button>
-                <div id="language-menu"
-                    class="absolute right-0 mt-2 w-48 bg-slate-800 rounded-md shadow-lg py-1 hidden z-50">
-                    <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="en">🇺🇸 English</button>
-                    <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="zh-HK">🇭🇰 Chinese
-                        (HK)</button>
-                    <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="ko">🇰🇷 Korean</button>
-                    <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="es">🇪🇸 Spanish</button>
-                    <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="ar">🇸🇦 Arabic</button>
-                </div>
-            </div>
+        <div class="relative" id="language-dropdown">
+          <button id="language-btn" class="px-3 py-2 rounded-md bg-slate-700 hover:bg-slate-600 text-white">
+            🇺🇸 English ▼
+          </button>
+          <div id="language-menu"
+            class="absolute right-0 mt-2 w-48 bg-slate-800 rounded-md shadow-lg py-1 hidden z-50">
+            <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="en">🇺🇸 English</button>
+            <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="zh-HK">🇭🇰 Chinese (HK)</button>
+            <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="ko">🇰🇷 Korean</button>
+            <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="es">🇪🇸 Spanish</button>
+            <button class="w-full text-left px-4 py-2 hover:bg-slate-700" data-lang="ar">🇸🇦 Arabic</button>
+          </div>
+        </div>
         <button id="profile-btn" class="px-3 py-2 rounded-md bg-slate-700 hover:bg-slate-600 flex items-center">
           <ion-icon name="settings-outline" class="mr-1 text-white"></ion-icon> Profile
         </button>
@@ -102,7 +94,6 @@
       <div id="balance" class="text-4xl font-bold text-slate-900 dark:text-white mb-6">$12,530.22</div>
 
       <div class="grid grid-cols-4 gap-4 mt-4">
-        <!-- Deposit -->
         <div class="flex flex-col items-center">
           <button id="openDeposit"
             class="w-16 h-16 flex items-center justify-center rounded-full border border-sky-500 text-sky-500 hover:bg-sky-500 hover:text-white transition">
@@ -111,7 +102,6 @@
           <span class="text-sm mt-1 text-slate-700 dark:text-slate-200">Deposit</span>
         </div>
 
-        <!-- Withdraw -->
         <div class="flex flex-col items-center">
           <button id="openWithdraw"
             class="w-16 h-16 flex items-center justify-center rounded-full border border-sky-500 text-sky-500 hover:bg-sky-500 hover:text-white transition">
@@ -120,7 +110,6 @@
           <span class="text-sm mt-1 text-slate-700 dark:text-slate-200">Withdraw</span>
         </div>
 
-        <!-- Mining -->
         <div class="flex flex-col items-center">
           <a href="mining.html"
             class="w-16 h-16 flex items-center justify-center rounded-full border border-sky-500 text-sky-500 hover:bg-sky-500 hover:text-white transition">
@@ -129,7 +118,6 @@
           <span class="text-sm mt-1 text-slate-700 dark:text-slate-200">Mining</span>
         </div>
 
-        <!-- History -->
         <div class="flex flex-col items-center">
           <a href="history.html"
             class="w-16 h-16 flex items-center justify-center rounded-full border border-sky-500 text-sky-500 hover:bg-sky-500 hover:text-white transition">
@@ -142,48 +130,40 @@
     </div>
 
     <!-- Market Movers -->
-<div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-lg p-6">
-  <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Market Movers</h2>
-  <table class="w-full text-left">
-    <thead>
-      <tr class="text-slate-500 dark:text-slate-400">
-        <th class="pb-2">Coin</th>
-        <th class="pb-2">Change 7d</th>
-        <th class="pb-2">Change 24h</th>
-      </tr>
-    </thead>
-    <tbody id="market-table">
-      <!-- Rows injected by JS -->
-    </tbody>
-  </table>
-</div>
-
+    <div class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-xl shadow-lg p-6">
+      <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">Market Movers</h2>
+      <table class="w-full text-left">
+        <thead>
+          <tr class="text-slate-500 dark:text-slate-400">
+            <th class="pb-2">Coin</th>
+            <th class="pb-2">Price (Current)</th>
+            <th class="pb-2">Change 7d</th>
+            <th class="pb-2">Change 24h</th>
+          </tr>
+        </thead>
+        <tbody id="market-table">
+          <!-- Rows injected by JS -->
+        </tbody>
+      </table>
+    </div>
 
   </main>
-
 
   <!-- Mobile Footer Navigation -->
   <nav
     class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-800/80 backdrop-blur-sm border-t border-slate-700 flex justify-around py-2 z-50">
-    <!-- Dashboard -->
     <a href="index.html" class="flex flex-col items-center text-sky-500">
       <ion-icon name="home-outline" class="text-2xl"></ion-icon>
       <span class="text-xs mt-1">Dashboard</span>
     </a>
-
-    <!-- Market -->
     <a href="market.html" class="flex flex-col items-center text-slate-400">
       <ion-icon name="trending-up-outline" class="text-2xl"></ion-icon>
       <span class="text-xs mt-1">Market</span>
     </a>
-
-    <!-- Options -->
     <a href="options.html" class="flex flex-col items-center text-slate-400">
       <ion-icon name="options-outline" class="text-2xl"></ion-icon>
       <span class="text-xs mt-1">Options</span>
     </a>
-
-    <!-- Mining -->
     <a href="mining.html" class="flex flex-col items-center text-slate-400">
       <ion-icon name="flame-outline" class="text-2xl"></ion-icon>
       <span class="text-xs mt-1">Mining</span>
@@ -195,8 +175,6 @@
     class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50">
     <div
       class="modal-content bg-white/80 dark:bg-slate-800/90 backdrop-blur-sm rounded-xl shadow-lg w-full max-w-sm m-4 relative">
-
-      <!-- Header -->
       <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
         <h2 class="text-lg font-bold text-slate-900 dark:text-white">Deposit</h2>
         <button id="closeDeposit"
@@ -204,18 +182,15 @@
       </div>
 
       <div class="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
-
-        <!-- Select Asset -->
         <div>
           <label class="text-xs font-medium">Select Asset</label>
-          <select id="assetSelect" class="w-full bg-slate-100 dark:bg-slate-700 border rounded-md p-2 text-sm mt-1">
+          <select id="assetSelect"
+            class="w-full bg-slate-100 dark:bg-slate-700 border rounded-md p-2 text-sm mt-1">
             <option value="BTC">Bitcoin (BTC)</option>
             <option value="ETH">Ethereum (ETH)</option>
             <option value="USDT">Tether (USDT)</option>
           </select>
         </div>
-
-        <!-- Deposit Address -->
         <div>
           <p class="text-xs text-slate-500 mb-1" id="assetNameLabel">Bitcoin Address</p>
           <div class="bg-slate-100 dark:bg-slate-700/60 rounded-md p-2 flex items-center justify-between">
@@ -223,22 +198,17 @@
             <button id="copyAddress" class="px-2 py-1 text-xs rounded bg-slate-300 dark:bg-slate-600">Copy</button>
           </div>
         </div>
-
-        <!-- Amount -->
         <div>
           <label class="text-xs font-medium">Amount</label>
           <input id="depositAmount" type="text" placeholder="0.00"
             class="mt-1 w-full p-2 rounded bg-slate-100 dark:bg-slate-700 border text-sm">
         </div>
-
-        <!-- Upload Proof -->
         <div>
           <label class="text-xs font-medium">Upload Proof (Optional)</label>
           <input id="depositFile" type="file" class="mt-1 w-full text-sm">
         </div>
       </div>
 
-      <!-- Submit -->
       <div class="p-4 bg-slate-50 dark:bg-slate-900/50">
         <button id="submitDeposit" class="w-full py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-md">
           Submit Deposit
@@ -246,162 +216,123 @@
       </div>
     </div>
   </div>
+
   <!-- Withdraw Modal -->
   <div id="withdrawModal"
     class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50">
-
     <div class="bg-white/80 dark:bg-slate-800/90 backdrop-blur-sm rounded-xl shadow-lg w-full max-w-sm m-4 relative">
-
-      <!-- Header -->
       <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
         <h2 class="text-lg font-bold text-slate-900 dark:text-white">Withdraw Crypto</h2>
         <button id="closeWithdraw"
           class="p-1 rounded-full text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-700">✕</button>
       </div>
-
-      <!-- Form -->
       <div class="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
-
-        <!-- Asset -->
         <div>
           <label class="text-xs font-medium">Select Asset</label>
-          <select id="withdrawAsset" class="w-full p-2 rounded bg-slate-100 dark:bg-slate-700 border text-sm mt-1">
+          <select id="withdrawAsset"
+            class="w-full p-2 rounded bg-slate-100 dark:bg-slate-700 border text-sm mt-1">
             <option value="BTC">Bitcoin (BTC)</option>
             <option value="ETH">Ethereum (ETH)</option>
             <option value="USDT">Tether (USDT)</option>
           </select>
         </div>
-
-        <!-- Address -->
         <div>
           <label class="text-xs font-medium">Recipient Address</label>
           <input id="withdrawAddress" type="text" placeholder="Paste wallet address"
             class="w-full p-2 rounded bg-slate-100 dark:bg-slate-700 border text-sm mt-1">
         </div>
-
-        <!-- Amount -->
         <div>
           <label class="text-xs font-medium">Amount</label>
           <input id="withdrawAmount" type="text" placeholder="0.00"
             class="w-full p-2 rounded bg-slate-100 dark:bg-slate-700 border text-sm mt-1">
         </div>
-
-        <!-- Transaction Password -->
         <div>
           <label class="text-xs font-medium">Transaction Password</label>
           <input id="withdrawPass" type="password" placeholder="••••••••"
             class="w-full p-2 rounded bg-slate-100 dark:bg-slate-700 border text-sm mt-1">
         </div>
       </div>
-
-      <!-- Submit -->
       <div class="p-4 bg-slate-50 dark:bg-slate-900/50">
         <button id="submitWithdraw" class="w-full py-2 bg-red-500 hover:bg-red-600 text-white rounded-md">
           Submit Withdraw
         </button>
       </div>
-
     </div>
   </div>
 
-
-
   <script>
-    /* LANGUAGE DROPDOWN */
-        const langBtn = document.getElementById('language-btn');
-        const langMenu = document.getElementById('language-menu');
-        langBtn.addEventListener('click', () => langMenu.classList.toggle('hidden'));
-        document.addEventListener('click', e => {
-            if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) langMenu.classList.add('hidden');
-        });
-        langMenu.querySelectorAll('button').forEach(btn => {
-            btn.addEventListener('click', () => {
-                langBtn.textContent = btn.textContent + " ▼";
-                langMenu.classList.add('hidden');
-                showToast(`Language set to ${btn.dataset.lang}`);
-            });
-        });
+    // --- LANGUAGE DROPDOWN ---
+    const langBtn = document.getElementById('language-btn');
+    const langMenu = document.getElementById('language-menu');
+    langBtn.addEventListener('click', () => langMenu.classList.toggle('hidden'));
+    document.addEventListener('click', e => {
+      if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) langMenu.classList.add('hidden');
+    });
+    langMenu.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        langBtn.textContent = btn.textContent + " ▼";
+        langMenu.classList.add('hidden');
+        showToast(`Language set to ${btn.dataset.lang}`);
+      });
+    });
+
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.textContent = message;
+      toast.className = 'fixed bottom-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-2 rounded-md shadow-lg';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2000);
+    }
+
     document.getElementById('profile-btn').addEventListener('click', () => {
       window.location.href = 'profile.html';
     });
 
-
-
-    /* Balance Toggle */
+    // --- BALANCE TOGGLE ---
     let visible = true;
     document.getElementById('toggle-balance').addEventListener('click', () => {
       const bal = document.getElementById('balance');
-      if (visible) { bal.textContent = '$****.**'; }
-      else { bal.textContent = '$12,530.22'; }
+      if (visible) bal.textContent = '$****.**';
+      else bal.textContent = '$12,530.22';
       visible = !visible;
     });
 
+    // --- MARKET MOVERS ---
     const marketTable = document.getElementById('market-table');
+    const coins = ['bitcoin', 'ethereum', 'solana', 'tether', 'cardano', 'ripple', 'polkadot', 'dogecoin', 'litecoin', 'chainlink'];
 
-    // Define the coins to track
-    // Coins to track (10 popular coins)
-const coins = [
-  'bitcoin', 
-  'ethereum', 
-  'solana', 
-  'tether', 
-  'cardano', 
-  'ripple', 
-  'polkadot', 
-  'dogecoin', 
-  'litecoin', 
-  'chainlink'
-];
+    async function fetchMarketData() {
+      try {
+        const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coins.join(',')}&price_change_percentage=7d`;
+        const resp = await fetch(url);
+        const data = await resp.json();
+        marketTable.innerHTML = '';
+        data.forEach(coin => {
+          const price = coin.current_price;
+          const change24h = coin.price_change_percentage_24h;
+          const change7d = coin.price_change_percentage_7d_in_currency ?? 0;
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="py-2">${coin.name}</td>
+            <td class="py-2 text-slate-900 dark:text-white font-mono">$${price.toLocaleString()}</td>
+            <td class="py-2 ${change7d >= 0 ? 'text-green-500' : 'text-red-500'}">
+              ${change7d >= 0 ? '+' : ''}${change7d.toFixed(2)}%
+            </td>
+            <td class="py-2 ${change24h >= 0 ? 'text-green-500' : 'text-red-500'}">
+              ${change24h >= 0 ? '+' : ''}${change24h.toFixed(2)}%
+            </td>
+          `;
+          marketTable.appendChild(row);
+        });
+      } catch (error) {
+        console.error('Error fetching market data:', error);
+        marketTable.innerHTML = `<tr><td colspan="4" class="text-center text-red-500 py-4">Failed to load data</td></tr>`;
+      }
+    }
+    fetchMarketData();
+    setInterval(fetchMarketData, 30000);
 
-async function fetchMarketData() {
-  try {
-    const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${coins.join(',')}&price_change_percentage=7d`;
-    const resp = await fetch(url);
-    const data = await resp.json();
-
-    marketTable.innerHTML = '';
-
-    data.forEach(coin => {
-      const change24h = coin.price_change_percentage_24h;
-      const change7d = coin.price_change_percentage_7d_in_currency;
-
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td class="py-2">${coin.name}</td>
-        <td class="py-2 ${change7d >= 0 ? 'text-green-500' : 'text-red-500'}">
-          ${change7d >= 0 ? '+' : ''}${change7d.toFixed(2)}%
-        </td>
-        <td class="py-2 ${change24h >= 0 ? 'text-green-500' : 'text-red-500'}">
-          ${change24h >= 0 ? '+' : ''}${change24h.toFixed(2)}%
-        </td>
-      `;
-      marketTable.appendChild(row);
-    });
-
-  } catch (error) {
-    console.error('Error fetching market data:', error);
-    marketTable.innerHTML = `<tr><td colspan="3" class="text-center text-red-500 py-4">Failed to load data</td></tr>`;
-  }
-}
-
-// Initial fetch
-fetchMarketData();
-// Refresh every 30 seconds
-setInterval(fetchMarketData, 30_000);
-
-
-    /* Navigation for both header & mobile footer */
-    const navButtons = document.querySelectorAll('.nav-item');
-    let activeView = 'dashboard';
-    navButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        activeView = btn.dataset.view;
-
-        // update view content
-        document.querySelector('main').scrollTop = 0;
-      });
-    });
-
+    // --- DEPOSIT MODAL ---
     const modal = document.getElementById("depositModal");
     const openBtn = document.getElementById("openDeposit");
     const closeBtn = document.getElementById("closeDeposit");
@@ -426,7 +357,6 @@ setInterval(fetchMarketData, 30_000);
     }
 
     updateAddress();
-
     openBtn.onclick = () => modal.classList.remove("hidden");
     closeBtn.onclick = () => modal.classList.add("hidden");
     assetSelect.onchange = updateAddress;
@@ -453,6 +383,7 @@ setInterval(fetchMarketData, 30_000);
       if (e.target === modal) modal.classList.add("hidden");
     });
 
+    // --- WITHDRAW MODAL ---
     const withdrawModal = document.getElementById("withdrawModal");
     const openWithdraw = document.getElementById("openWithdraw");
     const closeWithdraw = document.getElementById("closeWithdraw");
@@ -466,7 +397,6 @@ setInterval(fetchMarketData, 30_000);
       const address = document.getElementById("withdrawAddress").value;
       const amount = document.getElementById("withdrawAmount").value;
       const password = document.getElementById("withdrawPass").value;
-
       if (!address || !amount || !password) {
         submitWithdraw.textContent = "Fill All Fields!";
         submitWithdraw.disabled = true;
@@ -476,10 +406,8 @@ setInterval(fetchMarketData, 30_000);
         }, 1500);
         return;
       }
-
       submitWithdraw.textContent = "Processing...";
       submitWithdraw.disabled = true;
-
       setTimeout(() => {
         submitWithdraw.textContent = "Success ✅";
         setTimeout(() => withdrawModal.classList.add("hidden"), 1200);
@@ -493,9 +421,7 @@ setInterval(fetchMarketData, 30_000);
       if (e.target === withdrawModal) withdrawModal.classList.add("hidden");
     });
   </script>
-  <!--
-    - ionicon link
-  -->
+
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
